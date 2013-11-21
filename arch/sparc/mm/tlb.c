@@ -90,6 +90,12 @@ no_cache_flush:
 		nr = 0;
 	}
 
+	if (!tb->active) {
+		global_flush_tlb_page(mm, vaddr);
+		flush_tsb_user_page(mm, vaddr);
+		goto out;
+	}
+
 	if (nr == 0)
 		tb->mm = mm;
 
@@ -98,5 +104,6 @@ no_cache_flush:
 	if (nr >= TLB_BATCH_NR)
 		flush_tlb_pending();
 
+out:
 	put_cpu_var(tlb_batch);
 }

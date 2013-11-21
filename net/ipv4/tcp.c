@@ -485,14 +485,12 @@ int tcp_ioctl(struct sock *sk, int cmd, unsigned long arg)
 			 !tp->urg_data ||
 			 before(tp->urg_seq, tp->copied_seq) ||
 			 !before(tp->urg_seq, tp->rcv_nxt)) {
-			struct sk_buff *skb;
 
 			answ = tp->rcv_nxt - tp->copied_seq;
 
-			/* Subtract 1, if FIN is in queue. */
-			skb = skb_peek_tail(&sk->sk_receive_queue);
-			if (answ && skb)
-				answ -= tcp_hdr(skb)->fin;
+			/* Subtract 1, if FIN was received */
+			if (answ && sock_flag(sk, SOCK_DONE))
+				answ--;
 		} else
 			answ = tp->urg_seq - tp->copied_seq;
 		release_sock(sk);
@@ -743,7 +741,9 @@ static unsigned int tcp_xmit_size_goal(struct sock *sk, u32 mss_now,
 			   old_size_goal + mss_now > xmit_size_goal)) {
 			xmit_size_goal = old_size_goal;
 		} else {
-			tp->xmit_size_goal_segs = xmit_size_goal / mss_now;
+			tp->xmit_size_goal_segs =
+				min_t(u16, xmit_size_goal / mss_now,
+				      sk->sk_gso_max_segs);
 			xmit_size_goal = tp->xmit_size_goal_segs * mss_now;
 		}
 	}
@@ -2409,7 +2409,10 @@ static int do_tcp_setsockopt(struct sock *sk, int level,
 		/* Cap the max timeout in ms TCP will retry/retrans
 		 * before giving up and aborting (ETIMEDOUT) a connection.
 		 */
-		icsk->icsk_user_timeout = msecs_to_jiffies(val);
+		if (val < 0)
+			err = -EINVAL;
+		else
+			icsk->icsk_user_timeout = msecs_to_jiffies(val);
 		break;
 	default:
 		err = -ENOPROTOOPT;
@@ -3049,7 +3052,11 @@ int tcp_md5_hash_skb_data(struct tcp_md5sig_pool *hp,
 
 	for (i = 0; i < shi->nr_frags; ++i) {
 		const struct skb_frag_struct *f = &shi->frags[i];
-		sg_set_page(&sg, f->page, f->size, f->page_offset);
+		unsigned int offset = f->page_offset;
+		struct page *page = f->page + (offset >> PAGE_SHIFT);
+
+		sg_set_page(&sg, page, f->size,
+			    offset_in_page(offset));
 		if (crypto_hash_update(desc, &sg, f->size))
 			return 1;
 	}

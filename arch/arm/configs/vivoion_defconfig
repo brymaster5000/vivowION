@@ -1207,7 +1207,7 @@ CONFIG_LIBRA_SDIOIF=m
 # CONFIG_B43 is not set
 # CONFIG_B43LEGACY is not set
 CONFIG_BCMDHD=m
-CONFIG_BCMDHD_FW_PATH="/system/etc/firmware/fw_bcm4329_apsta_b2.bin"
+CONFIG_BCMDHD_FW_PATH="/system/vendor/firmware/fw_bcmdhd.bin"
 CONFIG_BCMDHD_NVRAM_PATH="/proc/calibration"
 # CONFIG_HOSTAP is not set
 # CONFIG_IWM is not set

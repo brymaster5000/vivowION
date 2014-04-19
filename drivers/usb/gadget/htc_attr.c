@@ -279,10 +279,6 @@ int android_switch_function(unsigned func)
 	struct android_dev *dev = _android_dev;
 	struct android_usb_function **functions = dev->functions;
 	struct android_usb_function *f;
-#ifdef CONFIG_SENSE_4_PLUS
-	struct android_usb_function *fadb = NULL;
-	struct android_usb_function *fums = NULL;
-#endif
 	struct android_usb_product *product;
 	int product_id, vendor_id, autobot_mode = 0;
 	unsigned val;
@@ -316,24 +312,10 @@ int android_switch_function(unsigned func)
 	while ((f = *functions++)) {
 		if ((func & (1 << USB_FUNCTION_UMS)) &&
 				!strcmp(f->name, "mass_storage"))
-#ifdef CONFIG_SENSE_4_PLUS
-			if (func == ((1 << USB_FUNCTION_UMS) | (1 << USB_FUNCTION_ADB)))
-				fums = f;
-			else
-				list_add_tail(&f->enabled_list, &dev->enabled_functions);
-#else
 			list_add_tail(&f->enabled_list, &dev->enabled_functions);
-#endif
 		else if ((func & (1 << USB_FUNCTION_ADB)) &&
 				!strcmp(f->name, "adb"))
-#ifdef CONFIG_SENSE_4_PLUS
-			if (func == ((1 << USB_FUNCTION_UMS) | (1 << USB_FUNCTION_ADB)))
-				fadb = f;
-			else
-				list_add_tail(&f->enabled_list, &dev->enabled_functions);
-#else
 			list_add_tail(&f->enabled_list, &dev->enabled_functions);
-#endif
 		else if ((func & (1 << USB_FUNCTION_ECM)) &&
 				!strcmp(f->name, "cdc_ethernet"))
 			list_add_tail(&f->enabled_list, &dev->enabled_functions);
@@ -401,15 +383,7 @@ int android_switch_function(unsigned func)
 			list_add_tail(&f->enabled_list, &dev->enabled_functions);
 #endif
 	}
-#ifdef CONFIG_SENSE_4_PLUS
-	
-	if (func == ((1 << USB_FUNCTION_UMS) | (1 << USB_FUNCTION_ADB))) {
-		if (fums)
-			list_add_tail(&fums->enabled_list, &dev->enabled_functions);
-		if (fadb)
-			list_add_tail(&fadb->enabled_list, &dev->enabled_functions);
-	}
-#endif
+
 	list_for_each_entry(f, &dev->enabled_functions, enabled_list)
 		pr_debug("# %s\n", f->name);
 

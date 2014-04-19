@@ -27,8 +27,6 @@
 
 #define _PIPE(pipe, a, b) ((a) + (pipe)*((b)-(a)))
 
-#define _MASKED_BIT_ENABLE(a) (((a) << 16) | (a))
-
 /*
  * The Bridge device's PCI config space has information about the
  * fb aperture size and the amount of pre-reserved memory.
@@ -356,7 +354,6 @@
  * the enables for writing to the corresponding low bit.
  */
 #define _3D_CHICKEN	0x02084
-#define _3D_CHICKEN_HIZ_PLANE_DISABLE_MSAA_4X_SNB	(1 << 10)
 #define _3D_CHICKEN2	0x0208c
 /* Disables pipelining of read flushes past the SF-WIZ interface.
  * Required on all Ironlake steppings according to the B-Spec, but the
@@ -2277,7 +2274,6 @@
 #define   PIPECONF_DISABLE	0
 #define   PIPECONF_DOUBLE_WIDE	(1<<30)
 #define   I965_PIPECONF_ACTIVE	(1<<30)
-#define   PIPECONF_FRAME_START_DELAY_MASK (3<<27)
 #define   PIPECONF_SINGLE_WIDE	0
 #define   PIPECONF_PIPE_UNLOCKED 0
 #define   PIPECONF_PIPE_LOCKED	(1<<25)
@@ -2742,8 +2738,6 @@
 #define _PFA_CTL_1               0x68080
 #define _PFB_CTL_1               0x68880
 #define  PF_ENABLE              (1<<31)
-#define  PF_PIPE_SEL_MASK_IVB	(3<<29)
-#define  PF_PIPE_SEL_IVB(pipe)	((pipe)<<29)
 #define  PF_FILTER_MASK		(3<<23)
 #define  PF_FILTER_PROGRAMMED	(0<<23)
 #define  PF_FILTER_MED_3x3	(1<<23)
@@ -2852,20 +2846,6 @@
 #define DISP_ARB_CTL	0x45000
 #define  DISP_TILE_SURFACE_SWIZZLING	(1<<13)
 #define  DISP_FBC_WM_DIS		(1<<15)
-
-/* GEN7 chicken */
-#define GEN7_COMMON_SLICE_CHICKEN1		0x7010
-# define GEN7_CSC1_RHWO_OPT_DISABLE_IN_RCC	((1<<10) | (1<<26))
-
-#define GEN7_L3CNTLREG1				0xB01C
-#define  GEN7_WA_FOR_GEN7_L3_CONTROL			0x3C4FFF8C
-
-#define GEN7_L3_CHICKEN_MODE_REGISTER		0xB030
-#define  GEN7_WA_L3_CHICKEN_MODE				0x20000000
-
-/* WaCatErrorRejectionIssue */
-#define GEN7_SQ_CHICKEN_MBCUNIT_CONFIG		0x9030
-#define  GEN7_SQ_CHICKEN_MBCUNIT_SQINTMOB	(1<<11)
 
 /* PCH */
 
@@ -3391,7 +3371,6 @@
 #define  GT_FIFO_FREE_ENTRIES			0x120008
 
 #define GEN6_UCGCTL2				0x9404
-# define GEN6_RCZUNIT_CLOCK_GATE_DISABLE		(1 << 13)
 # define GEN6_RCPBUNIT_CLOCK_GATE_DISABLE		(1 << 12)
 # define GEN6_RCCUNIT_CLOCK_GATE_DISABLE		(1 << 11)
 

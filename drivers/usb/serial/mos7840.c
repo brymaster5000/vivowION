@@ -1191,12 +1191,9 @@ static int mos7840_chars_in_buffer(struct tty_struct *tty)
 	}
 
 	spin_lock_irqsave(&mos7840_port->pool_lock, flags);
-	for (i = 0; i < NUM_URBS; ++i) {
-		if (mos7840_port->busy[i]) {
-			struct urb *urb = mos7840_port->write_urb_pool[i];
-			chars += urb->transfer_buffer_length;
-		}
-	}
+	for (i = 0; i < NUM_URBS; ++i)
+		if (mos7840_port->busy[i])
+			chars += URB_TRANSFER_BUFFER_SIZE;
 	spin_unlock_irqrestore(&mos7840_port->pool_lock, flags);
 	dbg("%s - returns %d", __func__, chars);
 	return chars;
@@ -2608,6 +2605,7 @@ error:
 static void mos7840_disconnect(struct usb_serial *serial)
 {
 	int i;
+	unsigned long flags;
 	struct moschip_port *mos7840_port;
 	dbg("%s", " disconnect :entering..........");
 

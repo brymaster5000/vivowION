@@ -46,6 +46,7 @@
 
 #ifdef CONFIG_RAWCHIP
 #include "rawchip/rawchip.h"
+#include "rawchip/Yushan_API.h"
 #endif
 
 DEFINE_MUTEX(pp_prev_lock);

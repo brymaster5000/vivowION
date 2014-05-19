@@ -802,26 +802,14 @@ static struct platform_driver vivow_backlight_driver = {
 };
 
 static struct msm_mdp_platform_data mdp_pdata = {
+	.overrides = MSM_MDP4_MDDI_DMA_SWITCH,
+	.color_format = MSM_MDP_OUT_IF_FMT_RGB888,
 #ifdef CONFIG_MDP4_HW_VSYNC
 	.xres = 480,
 	.yres = 800,
-	.back_porch = 2,
-	.front_porch = 42,
-	.pulse_width = 2,
-#else
-	.overrides = MSM_MDP4_MDDI_DMA_SWITCH,
-#endif
-};
-
-static struct msm_mdp_platform_data mdp_pdata_sony = {
-#ifdef CONFIG_MDP4_HW_VSYNC
-	.xres = 480,
-	.yres = 800,
-	.back_porch = 4,
-	.front_porch = 2,
-	.pulse_width = 4,
-#else
-	.overrides = MSM_MDP4_MDDI_DMA_SWITCH,
+	.back_porch = 20,
+	.front_porch = 20,
+	.pulse_width = 40,
 #endif
 };
 
@@ -830,10 +818,7 @@ int __init vivo_init_panel(void)
 	int rc;
 
 	B(KERN_INFO "%s(%d): enter. panel_type 0x%08x\n", __func__, __LINE__, panel_type);
-	if (panel_type == PANEL_VIVOW_HITACHI)
-		msm_device_mdp.dev.platform_data = &mdp_pdata;
-	else
-		msm_device_mdp.dev.platform_data = &mdp_pdata_sony;
+	msm_device_mdp.dev.platform_data = &mdp_pdata;
 
 	rc = platform_device_register(&msm_device_mdp);
 	if (rc)

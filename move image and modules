@@ -1,0 +1,2 @@
+cp arch/arm/boot/zImage ../VivoION_kernel/packages
+find . -name "*.ko" -exec cp {} ../VivoION_kernel/packages \;

@@ -21,60 +21,60 @@
 #include <linux/gpio.h>
 #include <asm/mach-types.h>
 
-#include "board-vivo.h"
+#include "board-vivow_ct.h"
 
 static struct rfkill *bt_rfk;
 static const char bt_name[] = "bcm4329";
 
 /* bt on configuration */
-static uint32_t vivo_bt_on_table[] = {
+static uint32_t vivow_ct_bt_on_table[] = {
 
 	/* BT_RTS */
-	GPIO_CFG(VIVO_GPIO_BT_UART1_RTS,
+	GPIO_CFG(VIVOW_CT_GPIO_BT_UART1_RTS,
 				1,
 				GPIO_CFG_OUTPUT,
 				GPIO_CFG_NO_PULL,
 				GPIO_CFG_8MA),
 	/* BT_CTS */
-	GPIO_CFG(VIVO_GPIO_BT_UART1_CTS,
+	GPIO_CFG(VIVOW_CT_GPIO_BT_UART1_CTS,
 				1,
 				GPIO_CFG_INPUT,
 				GPIO_CFG_PULL_UP,
 				GPIO_CFG_8MA),
 	/* BT_RX */
-	GPIO_CFG(VIVO_GPIO_BT_UART1_RX,
+	GPIO_CFG(VIVOW_CT_GPIO_BT_UART1_RX,
 				1,
 				GPIO_CFG_INPUT,
 				GPIO_CFG_PULL_UP,
 				GPIO_CFG_8MA),
 	/* BT_TX */
-	GPIO_CFG(VIVO_GPIO_BT_UART1_TX,
+	GPIO_CFG(VIVOW_CT_GPIO_BT_UART1_TX,
 				1,
 				GPIO_CFG_OUTPUT,
 				GPIO_CFG_NO_PULL,
 				GPIO_CFG_8MA),
 
 	/* BT_HOST_WAKE */
-	GPIO_CFG(VIVO_GPIO_BT_HOST_WAKE,
+	GPIO_CFG(VIVOW_CT_GPIO_BT_HOST_WAKE,
 				0,
 				GPIO_CFG_INPUT,
 				GPIO_CFG_NO_PULL,
 				GPIO_CFG_4MA),
 	/* BT_CHIP_WAKE */
-	GPIO_CFG(VIVO_GPIO_BT_CHIP_WAKE,
+	GPIO_CFG(VIVOW_CT_GPIO_BT_CHIP_WAKE,
 				0,
 				GPIO_CFG_OUTPUT,
 				GPIO_CFG_NO_PULL,
 				GPIO_CFG_4MA),
 
 	/* BT_RESET_N */
-	GPIO_CFG(VIVO_GPIO_BT_RESET_N,
+	GPIO_CFG(VIVOW_CT_GPIO_BT_RESET_N,
 				0,
 				GPIO_CFG_OUTPUT,
 				GPIO_CFG_NO_PULL,
 				GPIO_CFG_4MA),
 	/* BT_SHUTDOWN_N */
-	GPIO_CFG(VIVO_GPIO_BT_SHUTDOWN_N,
+	GPIO_CFG(VIVOW_CT_GPIO_BT_SHUTDOWN_N,
 				0,
 				GPIO_CFG_OUTPUT,
 				GPIO_CFG_NO_PULL,
@@ -82,54 +82,54 @@ static uint32_t vivo_bt_on_table[] = {
 };
 
 /* bt off configuration */
-static uint32_t vivo_bt_off_table[] = {
+static uint32_t vivow_ct_bt_off_table[] = {
 
 	/* BT_RTS */
-	GPIO_CFG(VIVO_GPIO_BT_UART1_RTS,
+	GPIO_CFG(VIVOW_CT_GPIO_BT_UART1_RTS,
 				0,
 				GPIO_CFG_INPUT,
 				GPIO_CFG_PULL_UP,
 				GPIO_CFG_8MA),
 	/* BT_CTS */
-	GPIO_CFG(VIVO_GPIO_BT_UART1_CTS,
+	GPIO_CFG(VIVOW_CT_GPIO_BT_UART1_CTS,
 				0,
 				GPIO_CFG_INPUT,
 				GPIO_CFG_PULL_UP,
 				GPIO_CFG_8MA),
 	/* BT_RX */
-	GPIO_CFG(VIVO_GPIO_BT_UART1_RX,
+	GPIO_CFG(VIVOW_CT_GPIO_BT_UART1_RX,
 				0,
 				GPIO_CFG_INPUT,
 				GPIO_CFG_PULL_UP,
 				GPIO_CFG_8MA),
 	/* BT_TX */
-	GPIO_CFG(VIVO_GPIO_BT_UART1_TX,
+	GPIO_CFG(VIVOW_CT_GPIO_BT_UART1_TX,
 				0,
 				GPIO_CFG_INPUT,
 				GPIO_CFG_PULL_UP,
 				GPIO_CFG_8MA),
 
 	/* BT_RESET_N */
-	GPIO_CFG(VIVO_GPIO_BT_RESET_N,
+	GPIO_CFG(VIVOW_CT_GPIO_BT_RESET_N,
 				0,
 				GPIO_CFG_OUTPUT,
 				GPIO_CFG_NO_PULL,
 				GPIO_CFG_4MA),
 	/* BT_SHUTDOWN_N */
-	GPIO_CFG(VIVO_GPIO_BT_SHUTDOWN_N,
+	GPIO_CFG(VIVOW_CT_GPIO_BT_SHUTDOWN_N,
 				0,
 				GPIO_CFG_OUTPUT,
 				GPIO_CFG_NO_PULL,
 				GPIO_CFG_4MA),
 
 	/* BT_HOST_WAKE */
-	GPIO_CFG(VIVO_GPIO_BT_HOST_WAKE,
+	GPIO_CFG(VIVOW_CT_GPIO_BT_HOST_WAKE,
 				0,
 				GPIO_CFG_INPUT,
 				GPIO_CFG_PULL_DOWN,
 				GPIO_CFG_4MA),
 	/* BT_CHIP_WAKE */
-	GPIO_CFG(VIVO_GPIO_BT_CHIP_WAKE,
+	GPIO_CFG(VIVOW_CT_GPIO_BT_CHIP_WAKE,
 				0,
 				GPIO_CFG_OUTPUT,
 				GPIO_CFG_NO_PULL,
@@ -149,46 +149,46 @@ static void config_bt_table(uint32_t *table, int len)
 	}
 }
 
-static void vivo_config_bt_on(void)
+static void vivow_ct_config_bt_on(void)
 {
 	printk(KERN_INFO "[BT]== R ON ==\n");
 
 	/* set bt on configuration*/
-	config_bt_table(vivo_bt_on_table,
-				ARRAY_SIZE(vivo_bt_on_table));
+	config_bt_table(vivow_ct_bt_on_table,
+				ARRAY_SIZE(vivow_ct_bt_on_table));
 	mdelay(2);
 
 	/* BT_RESET_N */
-	gpio_set_value(VIVO_GPIO_BT_RESET_N, 0);
+	gpio_set_value(VIVOW_CT_GPIO_BT_RESET_N, 0);
 	mdelay(1);
 
 	/* BT_SHUTDOWN_N */
-	gpio_set_value(VIVO_GPIO_BT_SHUTDOWN_N, 0);
+	gpio_set_value(VIVOW_CT_GPIO_BT_SHUTDOWN_N, 0);
 	mdelay(5);
 
 	/* BT_SHUTDOWN_N */
-	gpio_set_value(VIVO_GPIO_BT_SHUTDOWN_N, 1);
+	gpio_set_value(VIVOW_CT_GPIO_BT_SHUTDOWN_N, 1);
 	mdelay(1);
 
 	/* BT_RESET_N */
-	gpio_set_value(VIVO_GPIO_BT_RESET_N, 1);
+	gpio_set_value(VIVOW_CT_GPIO_BT_RESET_N, 1);
 	mdelay(2);
 
 }
 
-static void vivo_config_bt_off(void)
+static void vivow_ct_config_bt_off(void)
 {
 	/* BT_RESET_N */
-	gpio_set_value(VIVO_GPIO_BT_RESET_N, 0);
+	gpio_set_value(VIVOW_CT_GPIO_BT_RESET_N, 0);
 	mdelay(1);
 
 	/* BT_SHUTDOWN_N */
-	gpio_set_value(VIVO_GPIO_BT_SHUTDOWN_N, 0);
+	gpio_set_value(VIVOW_CT_GPIO_BT_SHUTDOWN_N, 0);
 	mdelay(1);
 
 	/* set bt off configuration*/
-	config_bt_table(vivo_bt_off_table,
-				ARRAY_SIZE(vivo_bt_off_table));
+	config_bt_table(vivow_ct_bt_off_table,
+				ARRAY_SIZE(vivow_ct_bt_off_table));
 	mdelay(2);
 
 	/* BT_RTS */
@@ -199,7 +199,7 @@ static void vivo_config_bt_off(void)
 	/* BT_HOST_WAKE */
 
 	/* BT_CHIP_WAKE */
-	gpio_set_value(VIVO_GPIO_BT_CHIP_WAKE, 0);
+	gpio_set_value(VIVOW_CT_GPIO_BT_CHIP_WAKE, 0);
 
 	printk(KERN_INFO "[BT]== R OFF ==\n");
 }
@@ -207,18 +207,18 @@ static void vivo_config_bt_off(void)
 static int bluetooth_set_power(void *data, bool blocked)
 {
 	if (!blocked)
-		vivo_config_bt_on();
+		vivow_ct_config_bt_on();
 	else
-		vivo_config_bt_off();
+		vivow_ct_config_bt_off();
 
 	return 0;
 }
 
-static struct rfkill_ops vivo_rfkill_ops = {
+static struct rfkill_ops vivow_ct_rfkill_ops = {
 	.set_block = bluetooth_set_power,
 };
 
-static int vivo_rfkill_probe(struct platform_device *pdev)
+static int vivow_ct_rfkill_probe(struct platform_device *pdev)
 {
 	int rc = 0;
 	bool default_state = true;  /* off */
@@ -230,7 +230,7 @@ static int vivo_rfkill_probe(struct platform_device *pdev)
 	bluetooth_set_power(NULL, default_state);
 
 	bt_rfk = rfkill_alloc(bt_name, &pdev->dev, RFKILL_TYPE_BLUETOOTH,
-				&vivo_rfkill_ops, NULL);
+				&vivow_ct_rfkill_ops, NULL);
 	if (!bt_rfk) {
 		rc = -ENOMEM;
 		goto err_rfkill_alloc;
@@ -252,38 +252,38 @@ err_rfkill_alloc:
 	return rc;
 }
 
-static int vivo_rfkill_remove(struct platform_device *dev)
+static int vivow_ct_rfkill_remove(struct platform_device *dev)
 {
 	rfkill_unregister(bt_rfk);
 	rfkill_destroy(bt_rfk);
 	return 0;
 }
 
-static struct platform_driver vivo_rfkill_driver = {
-	.probe = vivo_rfkill_probe,
-	.remove = vivo_rfkill_remove,
+static struct platform_driver vivow_ct_rfkill_driver = {
+	.probe = vivow_ct_rfkill_probe,
+	.remove = vivow_ct_rfkill_remove,
 	.driver = {
-		.name = "vivo_rfkill",
+		.name = "vivow_ct_rfkill",
 		.owner = THIS_MODULE,
 	},
 };
 
-static int __init vivo_rfkill_init(void)
+static int __init vivow_ct_rfkill_init(void)
 {
 
-	if (!machine_is_vivo())
+	if (!machine_is_vivow_ct())
 		return 0;
 
-	return platform_driver_register(&vivo_rfkill_driver);
+	return platform_driver_register(&vivow_ct_rfkill_driver);
 }
 
-static void __exit vivo_rfkill_exit(void)
+static void __exit vivow_ct_rfkill_exit(void)
 {
-	platform_driver_unregister(&vivo_rfkill_driver);
+	platform_driver_unregister(&vivow_ct_rfkill_driver);
 }
 
-module_init(vivo_rfkill_init);
-module_exit(vivo_rfkill_exit);
-MODULE_DESCRIPTION("vivo rfkill");
+module_init(vivow_ct_rfkill_init);
+module_exit(vivow_ct_rfkill_exit);
+MODULE_DESCRIPTION("vivow_ct rfkill");
 MODULE_AUTHOR("htc_ssdbt <htc_ssdbt@htc.com>");
 MODULE_LICENSE("GPL");

@@ -106,7 +106,7 @@ extern unsigned int batt_get_status(enum power_supply_property psp);
 
 #ifdef CONFIG_BATTERY_DS2746
 int htc_battery_update_change(int force_update);
-#if (defined(CONFIG_MACH_PRIMODS) || defined(CONFIG_MACH_PROTOU))
+#ifdef CONFIG_MACH_PRIMODS
 extern int get_batt_id(void); // This is for PrimoDS, use gauge ic but without id register
 extern void set_smem_chg_avalible(int chg_avalible);
 #endif

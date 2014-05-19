@@ -1,4 +1,4 @@
-/* linux/arch/arm/mach-msm/board-vivo-audio.c
+/* linux/arch/arm/mach-msm/board-vivow_ct-audio.c
  *
  * Copyright (C) 2010-2011 HTC Corporation.
  *
@@ -21,7 +21,7 @@
 #include <mach/gpio.h>
 #include <mach/pmic.h>
 #include <mach/dal.h>
-#include "board-vivo.h"
+#include "board-vivow_ct.h"
 #include <mach/qdsp5v2_2x/snddev_icodec.h>
 #include <mach/qdsp5v2_2x/snddev_ecodec.h>
 #include <mach/qdsp5v2_2x/audio_def.h>
@@ -33,8 +33,7 @@
 static struct mutex bt_sco_lock;
 static int curr_rx_mode;
 static atomic_t aic3254_ctl = ATOMIC_INIT(0);
-void vivo_back_mic_enable(int);
-
+void vivow_ct_back_mic_enable(int);
 
 
 #define BIT_SPEAKER	(1 << 0)
@@ -43,8 +42,8 @@ void vivo_back_mic_enable(int);
 #define BIT_FM_SPK	(1 << 3)
 #define BIT_FM_HS	(1 << 4)
 
-#define VIVO_ACDB_SMEM_SIZE        (0xE000)
-#define VIVO_ACDB_RADIO_BUFFER_SIZE (1024 * 3072)
+#define VIVOW_CT_ACDB_SMEM_SIZE        (0xE000)
+#define VIVOW_CT_ACDB_RADIO_BUFFER_SIZE (1024 * 3072)
 
 static struct q5v2_hw_info q5v2_audio_hw[Q5V2_HW_COUNT] = {
 	[Q5V2_HW_HANDSET] = {
@@ -125,48 +124,48 @@ static void config_gpio_table(uint32_t *table, int len)
 	}
 }
 
-void vivo_snddev_poweramp_on(int en)
+void vivow_ct_snddev_poweramp_on(int en)
 {
 	pr_aud_info("%s %d\n", __func__, en);
 
 	if (en) {
-		gpio_set_value(PM8058_GPIO_PM_TO_SYS(VIVO_AUD_SPK_SD), 1);
+		gpio_set_value(PM8058_GPIO_PM_TO_SYS(VIVOW_CT_AUD_SPK_SD), 1);
 		mdelay(30);
 		if (!atomic_read(&aic3254_ctl))
 			curr_rx_mode |= BIT_SPEAKER;
 	} else {
 		/* Reset AIC3254 */
-		gpio_set_value(PM8058_GPIO_PM_TO_SYS(VIVO_AUD_SPK_SD), 0);
+		gpio_set_value(PM8058_GPIO_PM_TO_SYS(VIVOW_CT_AUD_SPK_SD), 0);
 		if (!atomic_read(&aic3254_ctl))
 			curr_rx_mode &= ~BIT_SPEAKER;
 	}
 }
 
-void vivo_snddev_hsed_pamp_on(int en)
+void vivow_ct_snddev_hsed_pamp_on(int en)
 {
 	pr_aud_info("%s %d\n", __func__, en);
 
 	if (en) {
-		gpio_set_value(PM8058_GPIO_PM_TO_SYS(VIVO_AUD_AMP_EN), 1);
+		gpio_set_value(PM8058_GPIO_PM_TO_SYS(VIVOW_CT_AUD_AMP_EN), 1);
 		mdelay(30);
 		set_headset_amp(1);
 		if (!atomic_read(&aic3254_ctl))
 			curr_rx_mode |= BIT_HEADSET;
 	} else {
 		set_headset_amp(0);
-		gpio_set_value(PM8058_GPIO_PM_TO_SYS(VIVO_AUD_AMP_EN), 0);
+		gpio_set_value(PM8058_GPIO_PM_TO_SYS(VIVOW_CT_AUD_AMP_EN), 0);
 		if (!atomic_read(&aic3254_ctl))
 			curr_rx_mode &= ~BIT_HEADSET;
 	}
 }
 
-void vivo_snddev_hs_spk_pamp_on(int en)
+void vivow_ct_snddev_hs_spk_pamp_on(int en)
 {
-	vivo_snddev_poweramp_on(en);
-	vivo_snddev_hsed_pamp_on(en);
+	vivow_ct_snddev_poweramp_on(en);
+	vivow_ct_snddev_hsed_pamp_on(en);
 }
 
-void vivo_snddev_bt_sco_pamp_on(int en)
+void vivow_ct_snddev_bt_sco_pamp_on(int en)
 {
 	static int bt_sco_refcount;
 	pr_aud_info("%s %d\n", __func__, en);
@@ -180,34 +179,33 @@ void vivo_snddev_bt_sco_pamp_on(int en)
 			config_gpio_table(aux_pcm_gpio_off,
 					ARRAY_SIZE(aux_pcm_gpio_off));
 
-			gpio_set_value(VIVO_GPIO_BT_PCM_OUT, 0);
-			gpio_set_value(VIVO_GPIO_BT_PCM_SYNC, 0);
-			gpio_set_value(VIVO_GPIO_BT_PCM_CLK, 0);
-
+			gpio_set_value(VIVOW_CT_GPIO_BT_PCM_OUT, 0);
+			gpio_set_value(VIVOW_CT_GPIO_BT_PCM_SYNC, 0);
+			gpio_set_value(VIVOW_CT_GPIO_BT_PCM_CLK, 0);
 		}
 	}
 	mutex_unlock(&bt_sco_lock);
 }
 
-void vivo_snddev_receiver_pamp_on(int en)
+void vivow_ct_snddev_receiver_pamp_on(int en)
 {
 	pr_aud_info("%s %d\n", __func__, en);
 
 	if (en) {
-		gpio_set_value(PM8058_GPIO_PM_TO_SYS(VIVO_AUD_AMP_EN), 1);
+		gpio_set_value(PM8058_GPIO_PM_TO_SYS(VIVOW_CT_AUD_AMP_EN), 1);
 		mdelay(20);
 		set_handset_amp(1);
 		if (!atomic_read(&aic3254_ctl))
 			curr_rx_mode |= BIT_RECEIVER;
 	} else {
 		set_handset_amp(0);
-		gpio_set_value(PM8058_GPIO_PM_TO_SYS(VIVO_AUD_AMP_EN), 0);
+		gpio_set_value(PM8058_GPIO_PM_TO_SYS(VIVOW_CT_AUD_AMP_EN), 0);
 		if (!atomic_read(&aic3254_ctl))
 			curr_rx_mode &= ~BIT_RECEIVER;
 	}
 }
 
-void vivo_snddev_usb_headset_on(int en)
+void vivow_ct_snddev_usb_headset_on(int en)
 {
 
 	struct vreg *vreg_ncp;
@@ -222,52 +220,52 @@ void vivo_snddev_usb_headset_on(int en)
 	pr_aud_err("%s %d\n", __func__, en);
 
 	if (en) {
-		gpio_set_value(VIVO_AUDIOz_UART_SW, 0);
-		gpio_set_value(VIVO_USBz_AUDIO_SW, 1);
+		gpio_set_value(VIVOW_CT_AUDIOz_UART_SW, 0);
+		gpio_set_value(VIVOW_CT_USBz_AUDIO_SW, 1);
 		ret = vreg_enable(vreg_ncp);
 	} else {
 		ret = vreg_disable(vreg_ncp);
-		gpio_set_value(VIVO_AUDIOz_UART_SW, 1);
-		gpio_set_value(VIVO_USBz_AUDIO_SW, 0);
+		gpio_set_value(VIVOW_CT_AUDIOz_UART_SW, 1);
+		gpio_set_value(VIVOW_CT_USBz_AUDIO_SW, 0);
 	}
 
 }
 
-void vivo_snddev_imic_pamp_on(int en)
+void vivow_ct_snddev_imic_pamp_on(int en)
 {
 	pr_aud_info("%s: %d\n", __func__, en);
 
 	if (en) {
 		pmic_hsed_enable(PM_HSED_CONTROLLER_0, PM_HSED_ENABLE_ALWAYS);
-		vivo_back_mic_enable(1);
+		vivow_ct_back_mic_enable(1);
 	} else {
 		pmic_hsed_enable(PM_HSED_CONTROLLER_0, PM_HSED_ENABLE_OFF);
-		vivo_back_mic_enable(0);
+		vivow_ct_back_mic_enable(0);
 	}
 }
 
-void vivo_snddev_emic_pamp_on(int en)
+void vivow_ct_snddev_emic_pamp_on(int en)
 {
 	pr_aud_info("%s %d\n", __func__, en);
 	if (en){
-		gpio_set_value(VIVO_AUD_MICPATH_SEL, 1);
+		gpio_set_value(VIVOW_CT_AUD_MICPATH_SEL, 1);
 	}else{
-		gpio_set_value(VIVO_AUD_MICPATH_SEL, 0);
+		gpio_set_value(VIVOW_CT_AUD_MICPATH_SEL, 0);
 	}
 }
 
-void vivo_back_mic_enable(int en)
+void vivow_ct_back_mic_enable(int en)
 {
 	pr_aud_info("%s %d\n", __func__, en);
 	if (en) {
-		gpio_set_value(VIVO_AUD_MICPATH_SEL, 0);
+		gpio_set_value(VIVOW_CT_AUD_MICPATH_SEL, 0);
 		pmic_hsed_enable(PM_HSED_CONTROLLER_1, PM_HSED_ENABLE_ALWAYS);
 	} else {
 		pmic_hsed_enable(PM_HSED_CONTROLLER_1, PM_HSED_ENABLE_OFF);
 	}
 }
 
-int vivo_get_rx_vol(uint8_t hw, int network, int level)
+int vivow_ct_get_rx_vol(uint8_t hw, int network, int level)
 {
 	struct q5v2_hw_info *info;
 	int vol, maxv, minv;
@@ -280,7 +278,7 @@ int vivo_get_rx_vol(uint8_t hw, int network, int level)
 	return vol;
 }
 
-void vivo_mic_bias_enable(int en, int shift)
+void vivow_ct_mic_bias_enable(int en, int shift)
 {
 	pr_aud_info("%s: %d\n", __func__, en);
 
@@ -290,43 +288,43 @@ void vivo_mic_bias_enable(int en, int shift)
 		pmic_hsed_enable(PM_HSED_CONTROLLER_2, PM_HSED_ENABLE_OFF);
 }
 
-void vivo_rx_amp_enable(int en)
+void vivow_ct_rx_amp_enable(int en)
 {
 	if (curr_rx_mode != 0) {
 		atomic_set(&aic3254_ctl, 1);
 		pr_aud_info("%s: curr_rx_mode 0x%x, en %d\n",
 			__func__, curr_rx_mode, en);
 		if (curr_rx_mode & BIT_SPEAKER)
-			vivo_snddev_poweramp_on(en);
+			vivow_ct_snddev_poweramp_on(en);
 		if (curr_rx_mode & BIT_HEADSET)
-			vivo_snddev_hsed_pamp_on(en);
+			vivow_ct_snddev_hsed_pamp_on(en);
 		if (curr_rx_mode & BIT_RECEIVER)
-			vivo_snddev_receiver_pamp_on(en);
+			vivow_ct_snddev_receiver_pamp_on(en);
 		atomic_set(&aic3254_ctl, 0);;
 	}
 }
 
-uint32_t vivo_get_smem_size(void)
+uint32_t vivow_ct_get_smem_size(void)
 {
-	return VIVO_ACDB_SMEM_SIZE;
+	return VIVOW_CT_ACDB_SMEM_SIZE;
 }
 
-uint32_t vivo_get_acdb_radio_buffer_size(void)
+uint32_t vivow_ct_get_acdb_radio_buffer_size(void)
 {
-	return VIVO_ACDB_RADIO_BUFFER_SIZE;
+	return VIVOW_CT_ACDB_RADIO_BUFFER_SIZE;
 }
 
-int vivo_support_aic3254(void)
-{
-	return 1;
-}
-
-int vivo_support_back_mic(void)
+int vivow_ct_support_aic3254(void)
 {
 	return 1;
 }
 
-void vivo_get_acoustic_tables(struct acoustic_tables *tb)
+int vivow_ct_support_back_mic(void)
+{
+	return 1;
+}
+
+void vivow_ct_get_acoustic_tables(struct acoustic_tables *tb)
 {
 	strcpy(tb->aic3254_dsp, "CodecDSPID_BCLK.txt\0");
 
@@ -343,48 +341,48 @@ void vivo_get_acoustic_tables(struct acoustic_tables *tb)
 }
 
 static struct q5v2audio_icodec_ops iops = {
-	.support_aic3254 = vivo_support_aic3254,
+	.support_aic3254 = vivow_ct_support_aic3254,
 };
 
 static struct acdb_ops acdb = {
-	.get_acdb_radio_buffer_size = vivo_get_acdb_radio_buffer_size,
+	.get_acdb_radio_buffer_size = vivow_ct_get_acdb_radio_buffer_size,
 };
 
 static struct q5v2audio_analog_ops ops = {
-	.speaker_enable	= vivo_snddev_poweramp_on,
-	.headset_enable	= vivo_snddev_hsed_pamp_on,
-	.handset_enable	= vivo_snddev_receiver_pamp_on,
-	.bt_sco_enable = vivo_snddev_bt_sco_pamp_on,
-	.headset_speaker_enable = vivo_snddev_hs_spk_pamp_on,
-	.usb_headset_enable = vivo_snddev_usb_headset_on,
-	.int_mic_enable = vivo_snddev_imic_pamp_on,
-	.ext_mic_enable = vivo_snddev_emic_pamp_on,
-	.fm_headset_enable = vivo_snddev_hsed_pamp_on,
-	.fm_speaker_enable = vivo_snddev_poweramp_on,
+	.speaker_enable	= vivow_ct_snddev_poweramp_on,
+	.headset_enable	= vivow_ct_snddev_hsed_pamp_on,
+	.handset_enable	= vivow_ct_snddev_receiver_pamp_on,
+	.bt_sco_enable = vivow_ct_snddev_bt_sco_pamp_on,
+	.headset_speaker_enable = vivow_ct_snddev_hs_spk_pamp_on,
+	.usb_headset_enable = vivow_ct_snddev_usb_headset_on,
+	.int_mic_enable = vivow_ct_snddev_imic_pamp_on,
+	.ext_mic_enable = vivow_ct_snddev_emic_pamp_on,
+	.fm_headset_enable = vivow_ct_snddev_hsed_pamp_on,
+	.fm_speaker_enable = vivow_ct_snddev_poweramp_on,
 };
 
 static struct q5v2audio_ecodec_ops eops = {
-	.bt_sco_enable  = vivo_snddev_bt_sco_pamp_on,
+	.bt_sco_enable  = vivow_ct_snddev_bt_sco_pamp_on,
 };
 
 static struct q5v2voice_ops vops = {
-	.get_rx_vol = vivo_get_rx_vol,
+	.get_rx_vol = vivow_ct_get_rx_vol,
 };
 
 static struct acoustic_ops acoustic = {
-	.enable_mic_bias = vivo_mic_bias_enable,
-	.support_aic3254 = vivo_support_aic3254,
-	.support_back_mic = vivo_support_back_mic,
-	.enable_back_mic =  vivo_back_mic_enable,
-	.get_acoustic_tables = vivo_get_acoustic_tables
+	.enable_mic_bias = vivow_ct_mic_bias_enable,
+	.support_aic3254 = vivow_ct_support_aic3254,
+	.support_back_mic = vivow_ct_support_back_mic,
+	.enable_back_mic =  vivow_ct_back_mic_enable,
+	.get_acoustic_tables = vivow_ct_get_acoustic_tables
 };
 
 static struct aic3254_ctl_ops cops = {
-	.rx_amp_enable = vivo_rx_amp_enable,
+	.rx_amp_enable = vivow_ct_rx_amp_enable,
 };
 
 
-void __init vivo_audio_init(void)
+void __init vivow_ct_audio_init(void)
 {
 	int rc;
 #if 0
@@ -408,53 +406,53 @@ void __init vivo_audio_init(void)
 	acdb_register_ops(&acdb);
 	aic3254_register_ctl_ops(&cops);
 
-//	pm8058_gpio_config(VIVO_AUD_SPK_SD, &tpa2051_pwr);
-//	pm8058_gpio_config(VIVO_AUD_AMP_EN, &tpa2051_pwr);
+//	pm8058_gpio_config(VIVOW_CT_AUD_SPK_SD, &tpa2051_pwr);
+//	pm8058_gpio_config(VIVOW_CT_AUD_AMP_EN, &tpa2051_pwr);
 
 
-	rc = gpio_request(VIVO_AUD_MICPATH_SEL, "aud_mic_sel");
+	rc = gpio_request(VIVOW_CT_AUD_MICPATH_SEL, "aud_mic_sel");
 	if (rc) {
-		pr_aud_err("%s:Failed to request VIVO_AUD_MICPATH_SEL GPIO\n", __func__);
+		pr_aud_err("%s:Failed to request VIVOW_CT_AUD_MICPATH_SEL GPIO\n", __func__);
 	}else{
-		rc = gpio_direction_output(VIVO_AUD_MICPATH_SEL, 0);
+		rc = gpio_direction_output(VIVOW_CT_AUD_MICPATH_SEL, 0);
 		if (rc < 0) {
-			pr_aud_err("%s: request VIVO_AUD_MICPATH_SEL gpio direction failed\n", __func__);
+			pr_aud_err("%s: request VIVOW_CT_AUD_MICPATH_SEL gpio direction failed\n", __func__);
 		}
 	}
 /*
-	gpio_request(PM8058_GPIO_PM_TO_SYS(VIVO_AUD_HP_PATH_SEL2), "aud_hppath_sel2");
-	gpio_direction_output(PM8058_GPIO_PM_TO_SYS(VIVO_AUD_HP_PATH_SEL2), 1);
-	gpio_set_value(PM8058_GPIO_PM_TO_SYS(VIVO_AUD_HP_PATH_SEL2), 0);
+	gpio_request(PM8058_GPIO_PM_TO_SYS(VIVOW_CT_AUD_HP_PATH_SEL2), "aud_hppath_sel2");
+	gpio_direction_output(PM8058_GPIO_PM_TO_SYS(VIVOW_CT_AUD_HP_PATH_SEL2), 1);
+	gpio_set_value(PM8058_GPIO_PM_TO_SYS(VIVOW_CT_AUD_HP_PATH_SEL2), 0);
 
-	gpio_request(PM8058_GPIO_PM_TO_SYS(VIVO_AUD_HP_PATH_SEL1), "aud_hppath_sel1");
-	gpio_direction_output(PM8058_GPIO_PM_TO_SYS(VIVO_AUD_HP_PATH_SEL1), 1);
-	gpio_set_value(PM8058_GPIO_PM_TO_SYS(VIVO_AUD_HP_PATH_SEL1), 1);
+	gpio_request(PM8058_GPIO_PM_TO_SYS(VIVOW_CT_AUD_HP_PATH_SEL1), "aud_hppath_sel1");
+	gpio_direction_output(PM8058_GPIO_PM_TO_SYS(VIVOW_CT_AUD_HP_PATH_SEL1), 1);
+	gpio_set_value(PM8058_GPIO_PM_TO_SYS(VIVOW_CT_AUD_HP_PATH_SEL1), 1);
 */
-      rc = gpio_request(PM8058_GPIO_PM_TO_SYS(VIVO_AUD_SPK_SD), "AMP_EN");
+      rc = gpio_request(PM8058_GPIO_PM_TO_SYS(VIVOW_CT_AUD_SPK_SD), "AMP_EN");
 	if (rc) {
-		pr_aud_err("%s:Failed to request VIVO_AUD_SPK_SD GPIO\n", __func__);
+		pr_aud_err("%s:Failed to request VIVOW_CT_AUD_SPK_SD GPIO\n", __func__);
 	}else{
-		rc = gpio_direction_output(PM8058_GPIO_PM_TO_SYS(VIVO_AUD_SPK_SD), 0);
+		rc = gpio_direction_output(PM8058_GPIO_PM_TO_SYS(VIVOW_CT_AUD_SPK_SD), 0);
 		if (rc < 0) {
-			pr_aud_err("%s: request VIVO_AUD_SPK_SD gpio direction failed\n", __func__);
+			pr_aud_err("%s: request VIVOW_CT_AUD_SPK_SD gpio direction failed\n", __func__);
 		}
 	}
 
-	rc = gpio_request(PM8058_GPIO_PM_TO_SYS(VIVO_AUD_AMP_EN), "HP_AMP_EN");
+	rc = gpio_request(PM8058_GPIO_PM_TO_SYS(VIVOW_CT_AUD_AMP_EN), "HP_AMP_EN");
 	if (rc) {
-		pr_aud_err("%s:Failed to request VIVO_AUD_AMP_EN GPIO\n", __func__);
+		pr_aud_err("%s:Failed to request VIVOW_CT_AUD_AMP_EN GPIO\n", __func__);
 	}else{
-		rc = gpio_direction_output(PM8058_GPIO_PM_TO_SYS(VIVO_AUD_AMP_EN), 0);
+		rc = gpio_direction_output(PM8058_GPIO_PM_TO_SYS(VIVOW_CT_AUD_AMP_EN), 0);
 		if (rc < 0) {
-			pr_aud_err("%s: request VIVO_AUD_AMP_EN gpio direction failed\n", __func__);
+			pr_aud_err("%s: request VIVOW_CT_AUD_AMP_EN gpio direction failed\n", __func__);
 		}
 	}
 
 	mutex_lock(&bt_sco_lock);
 	config_gpio_table(aux_pcm_gpio_off, ARRAY_SIZE(aux_pcm_gpio_off));
-	gpio_set_value(VIVO_GPIO_BT_PCM_OUT, 0);
-	gpio_set_value(VIVO_GPIO_BT_PCM_SYNC, 0);
-	gpio_set_value(VIVO_GPIO_BT_PCM_CLK, 0);
+	gpio_set_value(VIVOW_CT_GPIO_BT_PCM_OUT, 0);
+	gpio_set_value(VIVOW_CT_GPIO_BT_PCM_SYNC, 0);
+	gpio_set_value(VIVOW_CT_GPIO_BT_PCM_CLK, 0);
 	mutex_unlock(&bt_sco_lock);
 
 }

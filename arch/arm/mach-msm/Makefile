@@ -37,11 +37,7 @@ ifdef CONFIG_ARCH_QSD8X50
 	obj-$(CONFIG_MSM_SOC_REV_NONE) += acpuclock-8x50.o
 endif
 
-ifdef CONFIG_ARCH_MSM8625
-	obj-$(CONFIG_SMP) += headsmp.o platsmp-8625.o
-else
-	obj-$(CONFIG_SMP) += headsmp.o platsmp.o
-endif
+obj-$(CONFIG_SMP) += headsmp.o platsmp.o
 
 obj-$(CONFIG_MSM_CPU_AVS) += avs.o
 obj-$(CONFIG_MSM_AVS_HW) += avs_hw.o
@@ -253,7 +249,6 @@ obj-$(CONFIG_ARCH_MSM7X27) += clock-pcom-lookup.o
 obj-$(CONFIG_MACH_MSM7X27_SURF) += board-msm7x27.o devices-msm7x27.o
 obj-$(CONFIG_MACH_MSM7X27_FFA) += board-msm7x27.o devices-msm7x27.o
 obj-$(CONFIG_ARCH_MSM7X27A) += clock-pcom-lookup.o devices-msm7x27a.o htc_awb_cal.o
-obj-$(CONFIG_ARCH_MSM8625) += devices-msm7x27a.o clock-pcom-lookup.o #mpm-8625.o
 obj-$(CONFIG_MACH_PICO) += board-pico.o devices-msm7x27a.o devices_htc.o board-pico-wifi.o htc_wifi_nvs.o
 obj-$(CONFIG_MACH_PICO) += display/board-pico-panel.o
 obj-$(CONFIG_MACH_PICO) += board-pico-keypad.o
@@ -282,12 +277,6 @@ obj-$(CONFIG_MACH_PRIMODS) += board-primods-wifi.o htc_wifi_nvs.o htc_fast_clk_7
 obj-$(CONFIG_MACH_PRIMODS) += board-primods-audio.o
 obj-$(CONFIG_MACH_PRIMODS) += htc_simhotswap_slot1.o
 obj-$(CONFIG_MACH_PRIMODS) += htc_simhotswap_slot2.o
-obj-$(CONFIG_MACH_PROTOU) += board-protou.o devices-msm7x27a.o devices_htc.o emmc_partitions.o
-obj-$(CONFIG_MACH_PROTOU) += display/board-protou-panel.o
-obj-$(CONFIG_MACH_PROTOU) += board-protou-keypad.o
-obj-$(CONFIG_MACH_PROTOU) += board-protou-mmc.o
-obj-$(CONFIG_MACH_PROTOU) += board-protou-wifi.o htc_wifi_nvs.o htc_fast_clk_7k.o board-protou-rfkill.o htc_util_7x2x.o
-obj-$(CONFIG_MACH_PROTOU) += board-protou-audio.o
 obj-$(CONFIG_ARCH_MSM7X30) += devices-msm7x30.o memory_topology.o devices_htc.o emmc_partitions.o msm_vibrator.o
 obj-$(CONFIG_ARCH_MSM7X30) += clock-local.o clock-7x30.o acpuclock-7x30.o htc_awb_cal.o
 obj-$(CONFIG_MACH_MSM7X25_SURF) += board-msm7x27.o devices-msm7x25.o

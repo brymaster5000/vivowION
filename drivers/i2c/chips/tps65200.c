@@ -363,7 +363,7 @@ static void set_vdpm(struct work_struct *work)
 		tps_set_charger_ctrl(VDPM_ORIGIN_V);
 }
 
-#if (defined(CONFIG_TPS65200) && (defined(CONFIG_MACH_PRIMODS) || defined(CONFIG_MACH_PROTOU)))
+#if (defined(CONFIG_TPS65200) && defined(CONFIG_MACH_PRIMODS))
 int tps65200_mask_interrupt_register(int status)
 {
 	if (status == CHARGER_USB) {	// Vbus in

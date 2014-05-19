@@ -101,7 +101,7 @@
 #include <mach/sdio_al.h>
 #include "smd_private.h"
 #include <linux/bma150.h>
-#include "board-vivo.h"
+#include "board-vivow_ct.h"
 #include <mach/tpa2051d3.h>
 #include "board-msm7x30-regulator.h"
 #include <mach/board_htc.h>
@@ -155,7 +155,7 @@ struct pm8xxx_gpio_init_info {
 int __init vivo_init_panel(void);
 
 static unsigned int engineerid;
-unsigned int vivo_get_engineerid(void)
+unsigned int vivow_ct_get_engineerid(void)
 {
 	return engineerid;
 }
@@ -203,25 +203,25 @@ void wl_chip_asleep(struct uart_port *uport)
 }
 #endif
 
-static int vivo_ts_power(int on)
+static int vivow_ct_ts_power(int on)
 {
 	pr_info("[TP]%s: power %d\n", __func__, on);
 
 	if (on == 1) {
-		gpio_set_value(VIVO_GPIO_TP_EN, 1);
+		gpio_set_value(VIVOW_CT_GPIO_TP_EN, 1);
 		msleep(5);
-		gpio_set_value(PM8058_GPIO_PM_TO_SYS(VIVO_TP_RSTz), 1);
+		gpio_set_value(PM8058_GPIO_PM_TO_SYS(VIVOW_CT_TP_RSTz), 1);
 	} else if (on == 2) {
-		gpio_set_value(PM8058_GPIO_PM_TO_SYS(VIVO_TP_RSTz), 0);
+		gpio_set_value(PM8058_GPIO_PM_TO_SYS(VIVOW_CT_TP_RSTz), 0);
 		msleep(5);
-		gpio_set_value(PM8058_GPIO_PM_TO_SYS(VIVO_TP_RSTz), 1);
+		gpio_set_value(PM8058_GPIO_PM_TO_SYS(VIVOW_CT_TP_RSTz), 1);
 		msleep(40);
 	}
 
 	return 0;
 }
 
-struct atmel_i2c_platform_data vivo_ts_atmel_data[] = {
+struct atmel_i2c_platform_data vivow_ct_ts_atmel_data[] = {
 	{
 		.version = 0x0020,
 		.source = 1,
@@ -233,8 +233,8 @@ struct atmel_i2c_platform_data vivo_ts_atmel_data[] = {
 		.abs_pressure_max = 255,
 		.abs_width_min = 0,
 		.abs_width_max = 20,
-		.gpio_irq = PM8058_GPIO_PM_TO_SYS(VIVO_GPIO_TP_INT_N),
-		.power = vivo_ts_power,
+		.gpio_irq = PM8058_GPIO_PM_TO_SYS(VIVOW_CT_GPIO_TP_INT_N),
+		.power = vivow_ct_ts_power,
 		.config_T6 = {0, 0, 0, 0, 0, 0},
 		.config_T7 = {16, 15, 50},
 		.config_T8 = {10, 0, 2, 2, 0, 0, 5, 15, 4, 170},
@@ -264,8 +264,8 @@ struct atmel_i2c_platform_data vivo_ts_atmel_data[] = {
 		.abs_pressure_max = 255,
 		.abs_width_min = 0,
 		.abs_width_max = 20,
-		.gpio_irq = PM8058_GPIO_PM_TO_SYS(VIVO_GPIO_TP_INT_N),
-		.power = vivo_ts_power,
+		.gpio_irq = PM8058_GPIO_PM_TO_SYS(VIVOW_CT_GPIO_TP_INT_N),
+		.power = vivow_ct_ts_power,
 		.config_T6 = {0, 0, 0, 0, 0, 0},
 		.config_T7 = {16, 15, 50},
 		.config_T8 = {10, 0, 2, 2, 0, 0, 5, 15, 4, 170},
@@ -295,8 +295,8 @@ struct atmel_i2c_platform_data vivo_ts_atmel_data[] = {
 		.abs_pressure_max = 255,
 		.abs_width_min = 0,
 		.abs_width_max = 20,
-		.gpio_irq = PM8058_GPIO_PM_TO_SYS(VIVO_GPIO_TP_INT_N),
-		.power = vivo_ts_power,
+		.gpio_irq = PM8058_GPIO_PM_TO_SYS(VIVOW_CT_GPIO_TP_INT_N),
+		.power = vivow_ct_ts_power,
 		.config_T6 = {0, 0, 0, 0, 0, 0},
 		.config_T7 = {16, 15, 50},
 		.config_T8 = {10, 0, 2, 2, 0, 0, 5, 15},
@@ -325,8 +325,8 @@ struct atmel_i2c_platform_data vivo_ts_atmel_data[] = {
 		.abs_pressure_max = 255,
 		.abs_width_min = 0,
 		.abs_width_max = 20,
-		.gpio_irq = PM8058_GPIO_PM_TO_SYS(VIVO_GPIO_TP_INT_N),
-		.power = vivo_ts_power,
+		.gpio_irq = PM8058_GPIO_PM_TO_SYS(VIVOW_CT_GPIO_TP_INT_N),
+		.power = vivow_ct_ts_power,
 		.config_T6 = {0, 0, 0, 0, 0, 0},
 		.config_T7 = {16, 15, 50},
 		.config_T8 = {10, 0, 2, 2, 0, 0, 5, 15},
@@ -346,48 +346,48 @@ struct atmel_i2c_platform_data vivo_ts_atmel_data[] = {
 	},
 };
 
-static int vivo_ts_ektf2k_power(int on)
+static int vivow_ct_ts_ektf2k_power(int on)
 {
 	pr_info("[TP] %s: power %d\n", __func__, on);
 
 	if (on) {
-		gpio_set_value(VIVO_GPIO_TP_EN, 1);
+		gpio_set_value(VIVOW_CT_GPIO_TP_EN, 1);
 		udelay(300);
-		gpio_set_value(PM8058_GPIO_PM_TO_SYS(VIVO_TP_RSTz), 1);
+		gpio_set_value(PM8058_GPIO_PM_TO_SYS(VIVOW_CT_TP_RSTz), 1);
 		msleep(300);
 	} else {
-		gpio_set_value(VIVO_GPIO_TP_EN, 0);
+		gpio_set_value(VIVOW_CT_GPIO_TP_EN, 0);
 		udelay(11);
 	}
 
 	return 0;
 }
 
-static int vivo_ts_ektf2k_reset(void)
+static int vivow_ct_ts_ektf2k_reset(void)
 {
 	pr_info("[TP]%s: gpio reset\n", __func__);
-	gpio_set_value(PM8058_GPIO_PM_TO_SYS(VIVO_TP_RSTz), 0);
+	gpio_set_value(PM8058_GPIO_PM_TO_SYS(VIVOW_CT_TP_RSTz), 0);
 	udelay(100);
-	gpio_set_value(PM8058_GPIO_PM_TO_SYS(VIVO_TP_RSTz), 1);
+	gpio_set_value(PM8058_GPIO_PM_TO_SYS(VIVOW_CT_TP_RSTz), 1);
 	msleep(300);
 
 	return 0;
 }
 
-struct elan_ktf2k_i2c_platform_data vivo_ts_ektf2k_data[] = {
+struct elan_ktf2k_i2c_platform_data vivow_ct_ts_ektf2k_data[] = {
 	{
 		.version = 0x0021,
 		.abs_x_min = 0,
 		.abs_x_max = 640,
 		.abs_y_min = 0,
 		.abs_y_max = 1088,
-		.intr_gpio = PM8058_GPIO_PM_TO_SYS(VIVO_GPIO_TP_INT_N),
-		.power = vivo_ts_ektf2k_power,
-		.reset = vivo_ts_ektf2k_reset,
+		.intr_gpio = PM8058_GPIO_PM_TO_SYS(VIVOW_CT_GPIO_TP_INT_N),
+		.power = vivow_ct_ts_ektf2k_power,
+		.reset = vivow_ct_ts_ektf2k_reset,
 	},
 };
 
-static ssize_t vivo_virtual_keys_show(struct kobject *kobj,
+static ssize_t vivow_ct_virtual_keys_show(struct kobject *kobj,
 			struct kobj_attribute *attr, char *buf)
 {
 	return sprintf(buf,
@@ -398,51 +398,51 @@ static ssize_t vivo_virtual_keys_show(struct kobject *kobj,
 		"\n");
 }
 
-static struct kobj_attribute vivo_virtual_keys_attr = {
+static struct kobj_attribute vivow_ct_virtual_keys_attr = {
 	.attr = {
 		.name = "virtualkeys.atmel-touchscreen",
 		.mode = S_IRUGO,
 	},
-	.show = &vivo_virtual_keys_show,
+	.show = &vivow_ct_virtual_keys_show,
 };
 
-static struct kobj_attribute vivo_ektf2k_virtual_keys_attr = {
+static struct kobj_attribute vivow_ct_ektf2k_virtual_keys_attr = {
 	.attr = {
 		.name = "virtualkeys.elan-touchscreen",
 		.mode = S_IRUGO,
 	},
-	.show = &vivo_virtual_keys_show,
+	.show = &vivow_ct_virtual_keys_show,
 };
 
-static struct attribute *vivo_properties_attrs[] = {
-	&vivo_virtual_keys_attr.attr,
-	&vivo_ektf2k_virtual_keys_attr.attr,
+static struct attribute *vivow_ct_properties_attrs[] = {
+	&vivow_ct_virtual_keys_attr.attr,
+	&vivow_ct_ektf2k_virtual_keys_attr.attr,
 	NULL
 };
 
-static struct attribute_group vivo_properties_attr_group = {
-	.attrs = vivo_properties_attrs,
+static struct attribute_group vivow_ct_properties_attr_group = {
+	.attrs = vivow_ct_properties_attrs,
 };
 
 static struct i2c_board_info i2c_devices[] = {
 	{
 		I2C_BOARD_INFO(ATMEL_QT602240_NAME, 0x94 >> 1),
-		.platform_data = &vivo_ts_atmel_data,
-		.irq = PM8058_GPIO_IRQ(PM8058_IRQ_BASE, VIVO_GPIO_TP_INT_N)
+		.platform_data = &vivow_ct_ts_atmel_data,
+		.irq = PM8058_GPIO_IRQ(PM8058_IRQ_BASE, VIVOW_CT_GPIO_TP_INT_N)
 	},
 	{
 		I2C_BOARD_INFO(ELAN_KTF2K_NAME, 0x15),
-		.platform_data = &vivo_ts_ektf2k_data,
-		.irq = PM8058_GPIO_IRQ(PM8058_IRQ_BASE, VIVO_GPIO_TP_INT_N)
+		.platform_data = &vivow_ct_ts_ektf2k_data,
+		.irq = PM8058_GPIO_IRQ(PM8058_IRQ_BASE, VIVOW_CT_GPIO_TP_INT_N)
 	},
 };
 
 static struct akm8975_platform_data compass_platform_data = {
-	.layouts = VIVO_LAYOUTS,
+	.layouts = VIVOW_CT_LAYOUTS,
 };
 
 static struct bma150_platform_data gsensor_platform_data = {
-	.intr = VIVO_GPIO_GSENSOR_INT,
+	.intr = VIVOW_CT_GPIO_GSENSOR_INT,
 	.chip_layout = 1,
 };
 
@@ -498,7 +498,7 @@ static int capella_cm3628_power(int pwr_device, uint8_t enable)
 }
 
 static struct cm3628_platform_data cm3628_pdata = {
-	.intr = PM8058_GPIO_PM_TO_SYS(VIVO_GPIO_PS_INT_N),
+	.intr = PM8058_GPIO_PM_TO_SYS(VIVOW_CT_GPIO_PS_INT_N),
 	.levels = { 0, 0, 0, 0x16, 0x2D, 0x2C4,
 			0x3CA, 0x447, 0x4C4, 0xFFFF},
 	.golden_adc = 0x375,
@@ -516,17 +516,17 @@ static struct i2c_board_info i2c_Sensors_devices[] = {
 	{
 		I2C_BOARD_INFO(AKM8975_I2C_NAME, 0x1A >> 1),
 		.platform_data = &compass_platform_data,
-		.irq = PM8058_GPIO_IRQ(PM8058_IRQ_BASE, VIVO_GPIO_COMPASS_INT_N),
+		.irq = PM8058_GPIO_IRQ(PM8058_IRQ_BASE, VIVOW_CT_GPIO_COMPASS_INT_N),
 	},
 	{
 		I2C_BOARD_INFO(BMA150_I2C_NAME, 0x70 >> 1),
 		.platform_data = &gsensor_platform_data,
-		.irq = PM8058_GPIO_IRQ(PM8058_IRQ_BASE, VIVO_GPIO_GSENSOR_INT),
+		.irq = PM8058_GPIO_IRQ(PM8058_IRQ_BASE, VIVOW_CT_GPIO_GSENSOR_INT),
 	},
 	{
 		I2C_BOARD_INFO(CM3628_I2C_NAME, 0xC0 >> 1),
 		.platform_data = &cm3628_pdata,
-		.irq = PM8058_GPIO_IRQ(PM8058_IRQ_BASE, VIVO_GPIO_PS_INT_N),
+		.irq = PM8058_GPIO_IRQ(PM8058_IRQ_BASE, VIVOW_CT_GPIO_PS_INT_N),
 	},
 };
 
@@ -537,7 +537,7 @@ static int pm8058_gpios_init(void)
 
 	struct pm8xxx_gpio_init_info tp_gpio_cfgs[] = {
 		{
-			PM8058_GPIO_PM_TO_SYS(VIVO_GPIO_TP_INT_N),
+			PM8058_GPIO_PM_TO_SYS(VIVOW_CT_GPIO_TP_INT_N),
 			{
 				.direction     = PM_GPIO_DIR_IN,
 				.output_buffer = 0,
@@ -550,7 +550,7 @@ static int pm8058_gpios_init(void)
 			},
 		},
 		{
-			PM8058_GPIO_PM_TO_SYS(VIVO_TP_RSTz),
+			PM8058_GPIO_PM_TO_SYS(VIVOW_CT_TP_RSTz),
 			{
 				.direction     = PM_GPIO_DIR_OUT,
 				.output_buffer = PM_GPIO_OUT_BUF_CMOS,
@@ -607,7 +607,7 @@ static int pm8058_gpios_init(void)
 #endif
 
 	struct pm8xxx_gpio_init_info gpio15 = {
-		PM8058_GPIO_PM_TO_SYS(VIVO_GPIO_FLASH_EN),
+		PM8058_GPIO_PM_TO_SYS(VIVOW_CT_GPIO_FLASH_EN),
 		{
 			.direction      = PM_GPIO_DIR_OUT,
 			.output_buffer  = PM_GPIO_OUT_BUF_CMOS,
@@ -620,7 +620,7 @@ static int pm8058_gpios_init(void)
 	};
 
 	struct pm8xxx_gpio_init_info gpio18 = {
-		PM8058_GPIO_PM_TO_SYS(VIVO_AUD_SPK_SD),
+		PM8058_GPIO_PM_TO_SYS(VIVOW_CT_AUD_SPK_SD),
 		{
 			.direction      = PM_GPIO_DIR_OUT,
 			.output_buffer  = PM_GPIO_OUT_BUF_CMOS,
@@ -633,7 +633,7 @@ static int pm8058_gpios_init(void)
 	};
 
 	struct pm8xxx_gpio_init_info gpio19 = {
-		PM8058_GPIO_PM_TO_SYS(VIVO_AUD_AMP_EN),
+		PM8058_GPIO_PM_TO_SYS(VIVOW_CT_AUD_AMP_EN),
 		{
 			.direction      = PM_GPIO_DIR_OUT,
 			.output_buffer  = PM_GPIO_OUT_BUF_CMOS,
@@ -646,7 +646,7 @@ static int pm8058_gpios_init(void)
 	};
 
 	struct pm8xxx_gpio_init_info gpio24 = {
-		PM8058_GPIO_PM_TO_SYS(VIVO_GREEN_LED),
+		PM8058_GPIO_PM_TO_SYS(VIVOW_CT_GREEN_LED),
 		{
 			.direction      = PM_GPIO_DIR_OUT,
 			.output_buffer  = PM_GPIO_OUT_BUF_CMOS,
@@ -659,7 +659,7 @@ static int pm8058_gpios_init(void)
 	};
 
 	struct pm8xxx_gpio_init_info gpio25 = {
-		PM8058_GPIO_PM_TO_SYS(VIVO_AMBER_LED),
+		PM8058_GPIO_PM_TO_SYS(VIVOW_CT_AMBER_LED),
 		{
 			.direction      = PM_GPIO_DIR_OUT,
 			.output_buffer  = PM_GPIO_OUT_BUF_CMOS,
@@ -685,7 +685,7 @@ static int pm8058_gpios_init(void)
 	};
 
 	struct pm8xxx_gpio_init_info compass_gpio = {
-		PM8058_GPIO_PM_TO_SYS(VIVO_GPIO_COMPASS_INT_N),
+		PM8058_GPIO_PM_TO_SYS(VIVOW_CT_GPIO_COMPASS_INT_N),
 		{
 			.direction      = PM_GPIO_DIR_IN,
 			.output_buffer  = PM_GPIO_OUT_BUF_CMOS,
@@ -699,7 +699,7 @@ static int pm8058_gpios_init(void)
 
 #ifdef CONFIG_MMC_MSM_CARD_HW_DETECTION
 	struct pm8xxx_gpio_init_info sdcc_det = {
-		PM8058_GPIO_PM_TO_SYS(VIVO_GPIO_SDMC_CD_N),
+		PM8058_GPIO_PM_TO_SYS(VIVOW_CT_GPIO_SDMC_CD_N),
 		{
 			.direction      = PM_GPIO_DIR_IN,
 			.pull           = PM_GPIO_PULL_UP_31P5,
@@ -711,7 +711,7 @@ static int pm8058_gpios_init(void)
 #endif
 
 	struct pm8xxx_gpio_init_info psensor_gpio = {
-		PM8058_GPIO_PM_TO_SYS(VIVO_GPIO_PS_INT_N),
+		PM8058_GPIO_PM_TO_SYS(VIVOW_CT_GPIO_PS_INT_N),
 		{
 			.direction      = PM_GPIO_DIR_IN,
 			.output_buffer  = PM_GPIO_OUT_BUF_CMOS,
@@ -723,7 +723,7 @@ static int pm8058_gpios_init(void)
 		}
 	};
 	struct pm8xxx_gpio_init_info psensor_gpio_LS_EN= {
-		PM8058_GPIO_PM_TO_SYS(VIVO_GPIO_LS_EN),
+		PM8058_GPIO_PM_TO_SYS(VIVOW_CT_GPIO_LS_EN),
 	{
 			.direction      = PM_GPIO_DIR_OUT,
 			.output_buffer  = PM_GPIO_OUT_BUF_CMOS,
@@ -735,7 +735,7 @@ static int pm8058_gpios_init(void)
 		}
 	};
 	struct pm8xxx_gpio_init_info psensor_gpio_en = {
-		PM8058_GPIO_PM_TO_SYS(VIVO_GPIO_PS_EN),
+		PM8058_GPIO_PM_TO_SYS(VIVOW_CT_GPIO_PS_EN),
 		{
 			.direction      = PM_GPIO_DIR_OUT,
 			.output_buffer  = PM_GPIO_OUT_BUF_CMOS,
@@ -748,24 +748,24 @@ static int pm8058_gpios_init(void)
 	};
 	rc = pm8xxx_gpio_config(psensor_gpio.gpio, &psensor_gpio.config);
 	if (rc) {
-		pr_err("%s VIVO_GPIO_PS_INT_N config failed\n", __func__);
+		pr_err("%s VIVOW_CT_GPIO_PS_INT_N config failed\n", __func__);
 		return rc;
 	} else
-		pr_info("%s [cm3628][PS]VIVO_GPIO_PS_INT_N config ok\n", __func__);
+		pr_info("%s [cm3628][PS]VIVOW_CT_GPIO_PS_INT_N config ok\n", __func__);
 
 	rc = pm8xxx_gpio_config(psensor_gpio_LS_EN.gpio, &psensor_gpio_LS_EN.config);
 	if (rc) {
-		pr_err("%s VIVO_GPIO_LS_EN config failed\n", __func__);
+		pr_err("%s VIVOW_CT_GPIO_LS_EN config failed\n", __func__);
 		return rc;
 	} else
-		pr_info("%s [cm3628][PS]VIVO_GPIO_LS_EN config ok\n", __func__);
+		pr_info("%s [cm3628][PS]VIVOW_CT_GPIO_LS_EN config ok\n", __func__);
 
 	rc = pm8xxx_gpio_config(psensor_gpio_en.gpio, &psensor_gpio_en.config);
 	if (rc) {
-		pr_err("%s VIVO_GPIO_PS_EN config failed\n", __func__);
+		pr_err("%s VIVOW_CT_GPIO_PS_EN config failed\n", __func__);
 		return rc;
 	} else
-		pr_info("%s [cm3628][PS]VIVO_GPIO_PS_EN config ok\n", __func__);
+		pr_info("%s [cm3628][PS]VIVOW_CT_GPIO_PS_EN config ok\n", __func__);
 
 	/* Headset */
 	/*
@@ -783,26 +783,26 @@ static int pm8058_gpios_init(void)
 
 	rc = pm8xxx_gpio_config(psensor_gpio.gpio, &psensor_gpio.config);
 	if (rc) {
-		pr_err("%s VIVO_GPIO_PS_INT_N config failed\n", __func__);
+		pr_err("%s VIVOW_CT_GPIO_PS_INT_N config failed\n", __func__);
 		return rc;
 	} else
-		pr_info("%s [cm3628][PS]VIVO_GPIO_PS_INT_N config ok\n", __func__);
+		pr_info("%s [cm3628][PS]VIVOW_CT_GPIO_PS_INT_N config ok\n", __func__);
 	*/
 	rc = pm8xxx_gpio_config(gpio15.gpio, &gpio15.config);
 	if (rc) {
-		pr_err("%s VIVO_GPIO_FLASH_EN config failed\n", __func__);
+		pr_err("%s VIVOW_CT_GPIO_FLASH_EN config failed\n", __func__);
 		return rc;
 	}
 
 	rc = pm8xxx_gpio_config(gpio18.gpio, &gpio18.config);
 	if (rc) {
-		pr_err("%s vivo_AUD_SPK_SD config failed\n", __func__);
+		pr_err("%s vivow_CT__AUD_SPK_SD config failed\n", __func__);
 		return rc;
 	}
 
 	rc = pm8xxx_gpio_config(gpio19.gpio, &gpio19.config);
 	if (rc) {
-		pr_err("%s vivo_AUD_AMP_EN config failed\n", __func__);
+		pr_err("%s vivow_CT__AUD_AMP_EN config failed\n", __func__);
 		return rc;
 	}
 /*
@@ -822,13 +822,13 @@ static int pm8058_gpios_init(void)
 */
 	rc = pm8xxx_gpio_config(gpio24.gpio, &gpio24.config);
 	if (rc) {
-		pr_err("%s PMIC_GPIO_VIVO_GREEN_LED config failed\n", __func__);
+		pr_err("%s PMIC_GPIO_VIVOW_CT_GREEN_LED config failed\n", __func__);
 		return rc;
 	}
 
 	rc = pm8xxx_gpio_config(gpio25.gpio, &gpio25.config);
 	if (rc) {
-		pr_err("%s PMIC_GPIO_VIVO_GREEN_GREEN config failed\n", __func__);
+		pr_err("%s PMIC_GPIO_VIVOW_CT_GREEN_GREEN config failed\n", __func__);
 		return rc;
 	}
 
@@ -847,22 +847,22 @@ static int pm8058_gpios_init(void)
 
 	rc = pm8xxx_gpio_config(sdcc_det.gpio, &sdcc_det.config);
 	if (rc) {
-		pr_err("%s VIVO_GPIO_SDMC_CD_N config failed\n", __func__);
+		pr_err("%s VIVOW_CT_GPIO_SDMC_CD_N config failed\n", __func__);
 		return rc;
 	}
 #endif
 
-	keypad_gpio.gpio = VIVO_VOL_UP;
+	keypad_gpio.gpio = VIVOW_CT_VOL_UP;
 	pm8xxx_gpio_config(keypad_gpio.gpio, &keypad_gpio.config);
-	keypad_gpio.gpio = VIVO_VOL_DN;
+	keypad_gpio.gpio = VIVOW_CT_VOL_DN;
 	pm8xxx_gpio_config(keypad_gpio.gpio, &keypad_gpio.config);
 
 	rc = pm8xxx_gpio_config(compass_gpio.gpio, &compass_gpio.config);
 	if (rc) {
-		pr_err("%s VIVO_GPIO_COMPASS_INT_N config failed\n", __func__);
+		pr_err("%s VIVOW_CT_GPIO_COMPASS_INT_N config failed\n", __func__);
 		return rc;
 	} else
-		pr_info("%s [AKM8975] VIVO_GPIO_COMPASS_INT_N config ok\n",
+		pr_info("%s [AKM8975] VIVOW_CT_GPIO_COMPASS_INT_N config ok\n",
 				__func__);
 
 #if 0
@@ -1225,7 +1225,7 @@ static struct pmic8058_leds_platform_data pm8058_fluid_leds_data = {
 
 static struct pm8xxx_irq_platform_data pm8xxx_irq_pdata = {
 	.irq_base		= PMIC8058_IRQ_BASE,
-	.devirq			= MSM_GPIO_TO_INT(VIVO_PMIC_GPIO_INT),
+	.devirq			= MSM_GPIO_TO_INT(VIVOW_CT_PMIC_GPIO_INT),
 	.irq_trigger_flag       = IRQF_TRIGGER_LOW,
 };
 
@@ -1249,7 +1249,7 @@ static struct msm_ssbi_platform_data msm7x30_ssbi_pm8058_pdata __devinitdata = {
 	.controller_type = MSM_SBI_CTRL_PMIC_ARBITER,
 	.slave	= {
 		.name			= "pm8058-core",
-		.irq = MSM_GPIO_TO_INT(VIVO_PMIC_GPIO_INT),
+		.irq = MSM_GPIO_TO_INT(VIVOW_CT_PMIC_GPIO_INT),
 		.platform_data		= &pm8058_7x30_data,
 	},
 	.rspinlock_name	= "D:PMIC_SSBI",
@@ -1257,7 +1257,7 @@ static struct msm_ssbi_platform_data msm7x30_ssbi_pm8058_pdata __devinitdata = {
 #endif
 
 static struct tps65200_platform_data tps65200_data = {
-	.gpio_chg_int = MSM_GPIO_TO_INT(PM8058_GPIO_PM_TO_SYS(VIVO_GPIO_CHG_INT)),
+	.gpio_chg_int = MSM_GPIO_TO_INT(PM8058_GPIO_PM_TO_SYS(VIVOW_CT_GPIO_CHG_INT)),
 };
 
 static struct i2c_board_info i2c_tps_devices[] = {
@@ -1293,27 +1293,27 @@ static int flashlight_control(int mode)
 
 #endif
 #ifdef CONFIG_FLASHLIGHT_AAT1271
-static void config_vivo_flashlight_gpios(void)
+static void config_vivow_ct_flashlight_gpios(void)
 {
 	uint32_t flashlight_gpio_table[] = {
-		 GPIO_CFG(VIVO_GPIO_TORCH_EN, 0, GPIO_OUTPUT,
+		 GPIO_CFG(VIVOW_CT_GPIO_TORCH_EN, 0, GPIO_OUTPUT,
 										 GPIO_NO_PULL, GPIO_CFG_2MA),
 	};
 	gpio_tlmm_config(flashlight_gpio_table[0], GPIO_CFG_ENABLE);
 }
 
-static struct flashlight_platform_data vivo_flashlight_data = {
-        .gpio_init = config_vivo_flashlight_gpios,
-        .torch = VIVO_GPIO_TORCH_EN,
-        .flash = PM8058_GPIO_PM_TO_SYS(VIVO_GPIO_FLASH_EN),
+static struct flashlight_platform_data vivow_ct_flashlight_data = {
+        .gpio_init = config_vivow_ct_flashlight_gpios,
+        .torch = VIVOW_CT_GPIO_TORCH_EN,
+        .flash = PM8058_GPIO_PM_TO_SYS(VIVOW_CT_GPIO_FLASH_EN),
         .flash_duration_ms = 600,
         .led_count = 2,
 };
 
-static struct platform_device vivo_flashlight_device = {
+static struct platform_device vivow_ct_flashlight_device = {
         .name = "FLASHLIGHT_AAT1271",
         .dev = {
-                .platform_data  = &vivo_flashlight_data,
+                .platform_data  = &vivow_ct_flashlight_data,
         },
 };
 
@@ -1413,7 +1413,7 @@ static int sensor_power_disable(char *power)
 }
 
 #ifdef CONFIG_S5K3H1GX
-static int Vivo_s5k3h1gx_vreg_on(void)
+static int Vivow_ct_s5k3h1gx_vreg_on(void)
 {
   int rc;
   pr_info("%s camera vreg on\n", __func__);
@@ -1439,7 +1439,7 @@ static int Vivo_s5k3h1gx_vreg_on(void)
   return rc;
 }
 
-static int Vivo_s5k3h1gx_vreg_off(void)
+static int Vivow_ct_s5k3h1gx_vreg_off(void)
 {
   int rc;
   pr_info("%s camera vreg off\n", __func__);
@@ -1465,7 +1465,7 @@ static int Vivo_s5k3h1gx_vreg_off(void)
 #endif
 
 #ifdef CONFIG_S5K6AAFX
-static int Vivo_s5k6aafx_vreg_on(void)
+static int Vivow_ct_s5k6aafx_vreg_on(void)
 {
   int rc;
   pr_info("%s camera vreg on\n", __func__);
@@ -1491,7 +1491,7 @@ static int Vivo_s5k6aafx_vreg_on(void)
   return rc;
 }
 
-static int Vivo_s5k6aafx_vreg_off(void)
+static int Vivow_ct_s5k6aafx_vreg_off(void)
 {
   int rc;
   pr_info("%s camera vreg off\n", __func__);
@@ -1559,7 +1559,7 @@ struct msm_camera_device_platform_data camera_device_data = {
 };
 
 #ifdef CONFIG_S5K3H1GX
-static void Vivo_maincam_clk_switch(void){
+static void Vivow_ct_maincam_clk_switch(void){
 	int rc = 0;
 	pr_info("[CAM] Doing clk switch (s5k3h1gx)\n");
 
@@ -1578,7 +1578,7 @@ static void Vivo_maincam_clk_switch(void){
 #endif
 
 #ifdef CONFIG_S5K6AAFX
-static void Vivo_seccam_clk_switch(void){
+static void Vivow_ct_seccam_clk_switch(void){
 
 	int rc = 0;
 	pr_info("[CAM] Doing clk switch (s5k6aafx)\n");
@@ -1606,9 +1606,9 @@ static struct msm_camera_sensor_info msm_camera_sensor_s5k3h1gx_data = {
   .sensor_name = "s5k3h1gx",
   .sensor_pwd = CAM1_PWD,
   .vcm_pwd = CAM1_VCM_PWD,
-  .camera_power_on = Vivo_s5k3h1gx_vreg_on,
-  .camera_power_off = Vivo_s5k3h1gx_vreg_off,
-  .camera_clk_switch = Vivo_maincam_clk_switch,
+  .camera_power_on = Vivow_ct_s5k3h1gx_vreg_on,
+  .camera_power_off = Vivow_ct_s5k3h1gx_vreg_off,
+  .camera_clk_switch = Vivow_ct_maincam_clk_switch,
   .pdata = &camera_device_data,
   .flash_type = MSM_CAMERA_FLASH_LED,
   .resource = msm_camera_resources,
@@ -1635,9 +1635,9 @@ static struct msm_camera_sensor_info msm_camera_sensor_s5k6aafx_data = {
 	.sensor_name = "s5k6aafx",
 	.sensor_reset = CAM2_RST,
 	.sensor_pwd = CAM2_PWD,
-	.camera_power_on = Vivo_s5k6aafx_vreg_on,
-	.camera_power_off = Vivo_s5k6aafx_vreg_off,
-	.camera_clk_switch = Vivo_seccam_clk_switch,
+	.camera_power_on = Vivow_ct_s5k6aafx_vreg_on,
+	.camera_power_off = Vivow_ct_s5k6aafx_vreg_off,
+	.camera_clk_switch = Vivow_ct_seccam_clk_switch,
 	.pdata = &camera_device_data,
 	.flash_type = MSM_CAMERA_FLASH_LED,
 	.resource = msm_camera_resources,
@@ -1705,7 +1705,7 @@ static struct platform_device msm_vpe_device = {
 
 
 static struct tpa2051d3_platform_data tpa2051d3_platform_data = {
-	//.gpio_tpa2051_spk_en = VIVO_AUD_SPK_SD,
+	//.gpio_tpa2051_spk_en = VIVOW_CT_AUD_SPK_SD,
 };
 
 static unsigned aux_pcm_gpio_off[] = {
@@ -1850,10 +1850,10 @@ int mi2s_unconfig_clk_gpio(void)
 
 static int __init buses_init(void)
 {
-	if (gpio_tlmm_config(GPIO_CFG(VIVO_PMIC_GPIO_INT, 1, GPIO_CFG_INPUT,
+	if (gpio_tlmm_config(GPIO_CFG(VIVOW_CT_PMIC_GPIO_INT, 1, GPIO_CFG_INPUT,
 				  GPIO_CFG_NO_PULL, GPIO_CFG_2MA), GPIO_CFG_ENABLE))
 		pr_err("%s: gpio_tlmm_config (gpio=%d) failed\n",
-		       __func__, VIVO_PMIC_GPIO_INT);
+		       __func__, VIVOW_CT_PMIC_GPIO_INT);
 
 	if (machine_is_msm8x60_fluid())
 		pm8058_7x30_data.keypad_pdata = &fluid_keypad_data;
@@ -2346,7 +2346,7 @@ static struct marimba_platform_data marimba_pdata = {
 	.tsadc_ssbi_adap = MARIMBA_SSBI_ADAP,
 };
 
-static void __init vivo_init_marimba(void)
+static void __init vivow_ct_init_marimba(void)
 {
 #if 0
 	vreg_marimba_1 = vreg_get(NULL, "s2");
@@ -2740,9 +2740,10 @@ static void msm7x30_cfg_smsc911x(void)
 #endif
 
 #ifdef CONFIG_USB_G_ANDROID
+
 static struct android_usb_platform_data android_usb_pdata = {
 	.vendor_id		= 0x0bb4,
-	.product_id		= 0x0cac,
+	.product_id		= 0x0cad,
 	.version		= 0x0100,
 	.product_name		= "Android Phone",
 	.manufacturer_name	= "HTC",
@@ -2752,7 +2753,7 @@ static struct android_usb_platform_data android_usb_pdata = {
 	.functions		= usb_functions_all,
 	.fserial_init_string	= "tty:modem,tty,tty:serial",
 	.nluns			= 1,
-	.usb_id_pin_gpio	= VIVO_GPIO_USB_ID_PIN,
+	.usb_id_pin_gpio        = VIVOW_CT_GPIO_USB_ID_PIN,
 };
 
 static struct platform_device android_usb_device = {
@@ -3244,32 +3245,32 @@ static void __init msm_qsd_spi_init(void)
 }
 
 static uint32_t usb_ID_PIN_output_table[] = {
-	GPIO_CFG(VIVO_GPIO_USB_ID_PIN, 0, GPIO_CFG_OUTPUT, GPIO_CFG_NO_PULL, GPIO_CFG_4MA),
+	GPIO_CFG(VIVOW_CT_GPIO_USB_ID_PIN, 0, GPIO_CFG_OUTPUT, GPIO_CFG_NO_PULL, GPIO_CFG_4MA),
 };
 
 
 static uint32_t usb_ID_PIN_input_table[] = {
-	GPIO_CFG(VIVO_GPIO_USB_ID_PIN, 0, GPIO_CFG_INPUT, GPIO_CFG_NO_PULL, GPIO_CFG_4MA),
-	GPIO_CFG(VIVO_GPIO_USB_ID1_PIN, 0, GPIO_CFG_INPUT, GPIO_CFG_NO_PULL, GPIO_CFG_4MA),
+	GPIO_CFG(VIVOW_CT_GPIO_USB_ID_PIN, 0, GPIO_CFG_INPUT, GPIO_CFG_NO_PULL, GPIO_CFG_4MA),
+	GPIO_CFG(VIVOW_CT_GPIO_USB_ID1_PIN, 0, GPIO_CFG_INPUT, GPIO_CFG_NO_PULL, GPIO_CFG_4MA),
 };
 
-void config_vivo_usb_id_gpios(bool output)
+void config_vivow_ct_usb_id_gpios(bool output)
 {
 	if (output) {
 		gpio_tlmm_config(usb_ID_PIN_output_table[0], GPIO_CFG_ENABLE);
-		gpio_set_value(VIVO_GPIO_USB_ID_PIN, 1);
-		printk(KERN_INFO "%s %d output high\n", __func__, VIVO_GPIO_USB_ID_PIN);
+		gpio_set_value(VIVOW_CT_GPIO_USB_ID_PIN, 1);
+		printk(KERN_INFO "%s %d output high\n", __func__, VIVOW_CT_GPIO_USB_ID_PIN);
 	} else {
 		gpio_tlmm_config(usb_ID_PIN_input_table[0], GPIO_CFG_ENABLE);
 		gpio_tlmm_config(usb_ID_PIN_input_table[1], GPIO_CFG_ENABLE);
-		printk(KERN_INFO "%s %d input none pull\n", __func__, VIVO_GPIO_USB_ID_PIN);
-		printk(KERN_INFO "%s %d input none pull\n", __func__, VIVO_GPIO_USB_ID1_PIN);
+		printk(KERN_INFO "%s %d input none pull\n", __func__, VIVOW_CT_GPIO_USB_ID_PIN);
+		printk(KERN_INFO "%s %d input none pull\n", __func__, VIVOW_CT_GPIO_USB_ID1_PIN);
 	}
 }
 
 
 #define PM8058ADC_16BIT(adc) ((adc * 2200) / 65535) /* vref=2.2v, 16-bits resolution */
-int64_t vivo_get_usbid_adc(void)
+int64_t vivow_ct_get_usbid_adc(void)
 {
 	uint32_t adc_value = 0xffffffff;
 	htc_get_usb_accessory_adc_level(&adc_value);
@@ -3279,9 +3280,9 @@ int64_t vivo_get_usbid_adc(void)
 
 static struct cable_detect_platform_data cable_detect_pdata = {
 	.detect_type 		= CABLE_TYPE_PMIC_ADC,
-	.usb_id_pin_gpio 	= VIVO_GPIO_USB_ID_PIN,
-	.config_usb_id_gpios 	= config_vivo_usb_id_gpios,
-	.get_adc_cb		= vivo_get_usbid_adc,
+	.usb_id_pin_gpio 	= VIVOW_CT_GPIO_USB_ID_PIN,
+	.config_usb_id_gpios 	= config_vivow_ct_usb_id_gpios,
+	.get_adc_cb		= vivow_ct_get_usbid_adc,
 };
 
 static struct platform_device cable_detect_device = {
@@ -3721,15 +3722,15 @@ static struct msm_serial_hs_platform_data msm_uart_dm1_pdata = {
 #else
 	/* for brcm BT */
 	.bt_wakeup_pin_supported = 1,
-	.bt_wakeup_pin = VIVO_GPIO_BT_CHIP_WAKE,
-	.host_wakeup_pin = VIVO_GPIO_BT_HOST_WAKE,
+	.bt_wakeup_pin = VIVOW_CT_GPIO_BT_CHIP_WAKE,
+	.host_wakeup_pin = VIVOW_CT_GPIO_BT_HOST_WAKE,
 #endif
 };
 
 #ifdef CONFIG_SERIAL_BCM_BT_LPM
 static struct bcm_bt_lpm_platform_data bcm_bt_lpm_pdata = {
-	.gpio_wake = VIVO_GPIO_BT_CHIP_WAKE,
-	.gpio_host_wake = VIVO_GPIO_BT_HOST_WAKE,
+	.gpio_wake = VIVOW_CT_GPIO_BT_CHIP_WAKE,
+	.gpio_host_wake = VIVOW_CT_CT_GPIO_BT_HOST_WAKE,
 	.request_clock_off_locked = msm_hs_request_clock_off_locked,
 	.request_clock_on_locked = msm_hs_request_clock_on_locked,
 };
@@ -3747,14 +3748,14 @@ struct platform_device bcm_bt_lpm_device = {
 
 
 #ifdef CONFIG_BT
-static struct platform_device vivo_rfkill = {
-	.name = "vivo_rfkill",
+static struct platform_device vivow_ct_rfkill = {
+	.name = "vivow_ct_rfkill",
 	.id = -1,
 };
 #endif
 /*
 static struct htc_sleep_clk_platform_data htc_slp_clk_data = {
-	.sleep_clk_pin = VIVO_GPIO_WIFI_BT_SLEEP_CLK_EN,
+	.sleep_clk_pin = VIVOW_CT_GPIO_WIFI_BT_SLEEP_CLK_EN,
 
 };
 
@@ -3927,7 +3928,7 @@ static struct platform_device pm8058_leds = {
 /* HTC_HEADSET_GPIO Driver */
 
 static struct htc_headset_gpio_platform_data htc_headset_gpio_data = {
-	.hpin_gpio		= VIVO_GPIO_35MM_HEADSET_DET,
+	.hpin_gpio		= VIVOW_CT_GPIO_35MM_HEADSET_DET,
 	.key_enable_gpio	= 0,
 	.mic_select_gpio	= 0,
 };
@@ -4111,10 +4112,10 @@ static struct platform_device *devices[] __initdata = {
 	&msm_device_uart_dm1,
 #endif
 #ifdef CONFIG_BT
-	&vivo_rfkill,
+	&vivow_ct_rfkill,
 #endif
 #ifdef CONFIG_FLASHLIGHT_AAT1271
-	&vivo_flashlight_device,
+	&vivow_ct_flashlight_device,
 #endif
 	&cable_detect_device,
 
@@ -4353,7 +4354,7 @@ static struct msm_i2c_ssbi_platform_data msm_i2c_ssbi7_pdata = {
 };
 #endif
 
-static void __init vivo_init_irq(void)
+static void __init vivow_ct_init_irq(void)
 {
 	msm_init_irq();
 }
@@ -5057,7 +5058,7 @@ static unsigned int msm7x30_sdcc_slot_status(struct device *dev)
 {
 	return (unsigned int)
 		!gpio_get_value_cansleep(
-			PM8058_GPIO_PM_TO_SYS(VIVO_GPIO_SDMC_CD_N));
+			PM8058_GPIO_PM_TO_SYS(VIVOW_CT_GPIO_SDMC_CD_N));
 }
 #endif
 #ifdef CONFIG_MMC_MSM_SDC4_WP_SUPPORT
@@ -5116,7 +5117,7 @@ static struct mmc_platform_data msm7x30_sdc1_data = {
 #endif
 
 #ifdef CONFIG_MMC_MSM_SDC2_SUPPORT
-static unsigned int vivo_sdc2_slot_type = MMC_TYPE_MMC;
+static unsigned int vivow_ct_sdc2_slot_type = MMC_TYPE_MMC;
 static struct mmc_platform_data msm7x30_sdc2_data = {
 	.ocr_mask       = MMC_VDD_165_195 | MMC_VDD_27_28,
 #ifdef CONFIG_MMC_MSM_SDC2_8_BIT_SUPPORT
@@ -5127,7 +5128,7 @@ static struct mmc_platform_data msm7x30_sdc2_data = {
 	.msmsdcc_fmin	= 144000,
 	.msmsdcc_fmid	= 24576000,
 	.msmsdcc_fmax	= 50000000,
-	.slot_type		= &vivo_sdc2_slot_type,
+	.slot_type		= &vivow_ct_sdc2_slot_type,
 	.nonremovable	= 1,
 };
 #endif
@@ -5135,7 +5136,7 @@ static struct mmc_platform_data msm7x30_sdc2_data = {
 #ifdef CONFIG_MMC_MSM_SDC3_SUPPORT
 /* HTC_WIFI_START */
 /*
-static unsigned int vivo_sdc3_slot_type = MMC_TYPE_SDIO_WIFI;
+static unsigned int vivow_sdc3_slot_type = MMC_TYPE_SDIO_WIFI;
 static struct mmc_platform_data msm7x30_sdc3_data = {
 	.ocr_mask	= MMC_VDD_27_28 | MMC_VDD_28_29,
 	.translate_vdd	= msm_sdcc_setup_power,
@@ -5146,7 +5147,7 @@ static struct mmc_platform_data msm7x30_sdc3_data = {
 	.msmsdcc_fmin	= 144000,
 	.msmsdcc_fmid	= 24576000,
 	.msmsdcc_fmax	= 49152000,
-	.slot_type		= &vivo_sdc3_slot_type,
+	.slot_type		= &vivow_sdc3_slot_type,
 	.nonremovable	= 0,
 };
 * */
@@ -5154,14 +5155,14 @@ static struct mmc_platform_data msm7x30_sdc3_data = {
 #endif
 
 #ifdef CONFIG_MMC_MSM_SDC4_SUPPORT
-static unsigned int vivo_sdc4_slot_type = MMC_TYPE_SD;
+static unsigned int vivow_ct_sdc4_slot_type = MMC_TYPE_SD;
 static struct mmc_platform_data msm7x30_sdc4_data = {
 	.ocr_mask	= MMC_VDD_27_28 | MMC_VDD_28_29,
 	.translate_vdd	= msm_sdcc_setup_power,
 	.mmc_bus_width  = MMC_CAP_4_BIT_DATA,
 #ifdef CONFIG_MMC_MSM_CARD_HW_DETECTION
 	.status      = msm7x30_sdcc_slot_status,
-	.status_irq  = PM8058_GPIO_IRQ(PMIC8058_IRQ_BASE, VIVO_GPIO_SDMC_CD_N),
+	.status_irq  = PM8058_GPIO_IRQ(PMIC8058_IRQ_BASE, VIVOW_CT_GPIO_SDMC_CD_N),
 	.irq_flags   = IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING,
 #endif
 #ifdef CONFIG_MMC_MSM_SDC4_WP_SUPPORT
@@ -5171,7 +5172,7 @@ static struct mmc_platform_data msm7x30_sdc4_data = {
 	.msmsdcc_fmid	= 25000000,
 	.msmsdcc_fmax	= 50000000,
 	.nonremovable	= 0,
-	.slot_type     = &vivo_sdc4_slot_type,
+	.slot_type     = &vivow_ct_sdc4_slot_type,
 };
 #endif
 
@@ -5294,7 +5295,7 @@ static const struct msm_gpio tsif_gpios[] = {
 static struct msm_tsif_platform_data tsif_platform_data = {
 	.num_gpios = ARRAY_SIZE(tsif_gpios),
 	.gpios = tsif_gpios,
-	.tsif_pclk = "ifvivo_clk",
+	.tsif_pclk = "ifvivow_ct_clk",
 	.tsif_ref_clk = "ref_clk",
 };
 #endif /* defined(CONFIG_TSIF) || defined(CONFIG_TSIF_MODULE) */
@@ -5336,15 +5337,15 @@ static struct msm_spm_platform_data msm_spm_data __initdata = {
 };
 
 #ifdef CONFIG_PERFLOCK
-static unsigned vivo_perf_acpu_table[] = {
+static unsigned vivow_ct_perf_acpu_table[] = {
 	245000000,
 	768000000,
 	1024000000,
 };
 
-static struct perflock_platform_data vivo_perflock_data = {
-	.perf_acpu_table = vivo_perf_acpu_table,
-	.table_size = ARRAY_SIZE(vivo_perf_acpu_table),
+static struct perflock_platform_data vivow_ct_perflock_data = {
+	.perf_acpu_table = vivow_ct_perf_acpu_table,
+	.table_size = ARRAY_SIZE(vivow_ct_perf_acpu_table),
 };
 #endif
 
@@ -5509,12 +5510,12 @@ static struct platform_device flip_switch_device = {
 	}
 };
 
-static void vivo_reset(void)
+static void vivow_ct_reset(void)
 {
-	gpio_set_value(VIVO_GPIO_PS_HOLD, 0);
+	gpio_set_value(VIVOW_CT_GPIO_PS_HOLD, 0);
 }
 
-void vivo_add_usb_devices(void)
+void vivow_ct_add_usb_devices(void)
 {
 	printk(KERN_INFO "%s rev: %d\n", __func__, system_rev);
 	android_usb_pdata.products[0].product_id =
@@ -5526,7 +5527,7 @@ void vivo_add_usb_devices(void)
 		android_usb_pdata.diag_init = 1;
 
 	msm_device_gadget_peripheral.dev.parent = &msm_device_otg.dev;
-	config_vivo_usb_id_gpios(0);
+	config_vivow_ct_usb_id_gpios(0);
 	platform_device_register(&msm_device_gadget_peripheral);
 	platform_device_register(&android_usb_device);
 }
@@ -5540,7 +5541,7 @@ static int __init board_serialno_setup(char *serialno)
 __setup("androidboot.serialno=", board_serialno_setup);
 
 #ifdef CONFIG_MDP4_HW_VSYNC
-static void vivo_te_gpio_config(void)
+static void vivow_ct_te_gpio_config(void)
 {
 	uint32_t te_gpio_table[] = {
 	PCOM_GPIO_CFG(30, 1, GPIO_INPUT, GPIO_PULL_DOWN, GPIO_CFG_2MA),
@@ -5549,7 +5550,7 @@ static void vivo_te_gpio_config(void)
 }
 #endif
 
-static void __init vivo_init(void)
+static void __init vivow_ct_init(void)
 {
 	int rc = 0;
 	struct kobject *properties_kobj;
@@ -5560,19 +5561,19 @@ static void __init vivo_init(void)
 	soc_version = socinfo_get_version();
 
 	/* Must set msm_hw_reset_hook before first proc comm */
-	msm_hw_reset_hook = vivo_reset;
+	msm_hw_reset_hook = vivow_ct_reset;
 
 	msm_clock_init(&msm7x30_clock_init_data);
 	msm_spm_init(&msm_spm_data, 1);
 	acpuclk_init(&acpuclk_7x30_soc_data);
 
 #ifdef CONFIG_PERFLOCK
-	perflock_init(&vivo_perflock_data);
+	perflock_init(&vivow_ct_perflock_data);
 #endif
 
 #if defined(CONFIG_SERIAL_MSM_HS) || defined(CONFIG_SERIAL_MSM_HS_LPM)
 #ifndef CONFIG_SERIAL_BCM_BT_LPM
-	msm_uart_dm1_pdata.rx_wakeup_irq = gpio_to_irq(VIVO_GPIO_BT_HOST_WAKE);
+	msm_uart_dm1_pdata.rx_wakeup_irq = gpio_to_irq(VIVOW_CT_GPIO_BT_HOST_WAKE);
 #endif
 #ifdef CONFIG_SERIAL_MSM_HS
 	msm_device_uart_dm1.name = "msm_serial_hs_brcm";
@@ -5622,17 +5623,17 @@ static void __init vivo_init(void)
 
 	/*usb driver won't be loaded in MFG 58 station and gift mode*/
 	if (!(board_mfg_mode() == 6 || board_mfg_mode() == 7))
-		vivo_add_usb_devices();
+		vivow_ct_add_usb_devices();
 
 #ifdef CONFIG_USB_EHCI_MSM_72K
 	msm_add_host(0, &msm_usb_host_pdata);
 #endif
 
-	rc = vivo_init_mmc(system_rev);
+	rc = vivow_ct_init_mmc(system_rev);
 	if (rc != 0)
 		pr_crit("%s: Unable to initialize MMC\n", __func__);
 
-	vivo_wifi_init();
+	vivow_ct_wifi_init();
 
 	msm7x30_init_mmc();
 	msm_qsd_spi_init();
@@ -5656,13 +5657,13 @@ static void __init vivo_init(void)
 	msm_device_i2c_init();
 	msm_device_i2c_2_init();
 	qup_device_i2c_init();
-	vivo_init_marimba();
+	vivow_ct_init_marimba();
 #ifdef CONFIG_MSM7KV2_AUDIO
 	aux_pcm_gpio_init();
 	spi_register_board_info(msm_spi_board_info,
 		ARRAY_SIZE(msm_spi_board_info));
 	msm_snddev_init();
-	vivo_audio_init();
+	vivow_ct_audio_init();
 #endif
 
 	i2c_register_board_info(0, msm_i2c_board_info,
@@ -5727,13 +5728,13 @@ static void __init vivo_init(void)
 	properties_kobj = kobject_create_and_add("board_properties", NULL);
 	if (properties_kobj)
 		rc = sysfs_create_group(properties_kobj,
-				&vivo_properties_attr_group);
+				&vivow_ct_properties_attr_group);
 	if (!properties_kobj || rc)
 		pr_err("failed to create board_properties\n");
 
-	vivo_init_keypad();
+	vivow_ct_init_keypad();
 #ifdef CONFIG_MDP4_HW_VSYNC
-	vivo_te_gpio_config();
+	vivow_ct_te_gpio_config();
 #endif
 	vivo_init_panel();
 	msm_init_pmic_vibrator(3000);
@@ -5770,7 +5771,7 @@ static struct reserve_info msm7x30_reserve_info __initdata = {
 	.paddr_to_memtype = msm7x30_paddr_to_memtype,
 };
 
-static void __init vivo_reserve(void)
+static void __init vivow_ct_reserve(void)
 {
 	reserve_info = &msm7x30_reserve_info;
 	msm_reserve();
@@ -5779,7 +5780,7 @@ static void __init vivo_reserve(void)
 	printk("EBI1 start=0x%lx size=0x%lx limit=0x%lx\n", msm7x30_reserve_table[MEMTYPE_EBI1].start, msm7x30_reserve_table[MEMTYPE_EBI1].size, msm7x30_reserve_table[MEMTYPE_EBI1].limit);
 }
 
-static void __init vivo_allocate_memory_regions(void)
+static void __init vivow_ct_allocate_memory_regions(void)
 {
 	unsigned long size;
 
@@ -5790,7 +5791,7 @@ static void __init vivo_allocate_memory_regions(void)
 		size, __va(MSM_FB_BASE), (unsigned long) MSM_FB_BASE);
 }
 
-static void __init vivo_map_io(void)
+static void __init vivow_ct_map_io(void)
 {
 	msm_shared_ram_phys = 0x00400000;
 	msm_map_msm7x30_io();
@@ -5799,12 +5800,12 @@ static void __init vivo_map_io(void)
 		       __func__);
 }
 
-static void __init vivo_init_early(void)
+static void __init vivow_ct_init_early(void)
 {
-	vivo_allocate_memory_regions();
+	vivow_ct_allocate_memory_regions();
 }
 
-static void __init vivo_fixup(struct machine_desc *desc, struct tag *tags,
+static void __init vivow_ct_fixup(struct machine_desc *desc, struct tag *tags,
 								char **cmdline, struct meminfo *mi)
 {
 	engineerid = parse_tag_engineerid(tags);
@@ -5816,12 +5817,12 @@ static void __init vivo_fixup(struct machine_desc *desc, struct tag *tags,
 	mi->bank[1].size = MSM_LINUX_SIZE2;
 }
 
-MACHINE_START(VIVO, "vivo")
-	.fixup = vivo_fixup,
-	.map_io = vivo_map_io,
-	.reserve = vivo_reserve,
-	.init_irq = vivo_init_irq,
-	.init_machine = vivo_init,
+MACHINE_START(VIVOW_CT, "vivow_ct")
+	.fixup = vivow_ct_fixup,
+	.map_io = vivow_ct_map_io,
+	.reserve = vivow_ct_reserve,
+	.init_irq = vivow_ct_init_irq,
+	.init_machine = vivow_ct_init,
 	.timer = &msm_timer,
-	.init_early = vivo_init_early,
+	.init_early = vivow_ct_init_early,
 MACHINE_END

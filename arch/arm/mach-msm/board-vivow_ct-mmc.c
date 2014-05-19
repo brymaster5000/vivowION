@@ -1,4 +1,4 @@
-/* linux/arch/arm/mach-msm/board-vivo-mmc.c
+/* linux/arch/arm/mach-msm/board-vivow-mmc.c
  *
  * Copyright (C) 2008 HTC Corporation.
  *
@@ -32,10 +32,12 @@
 #include <asm/mach/mmc.h>
 
 #include "devices.h"
-#include "board-vivo.h"
+#include "board-vivow_ct.h"
 #include "proc_comm.h"
+#include "pm.h"
+#include "pm-boot.h"
 
-#define VIVO_SDMC_CD_N_TO_SYS PM8058_GPIO_PM_TO_SYS(VIVO_GPIO_SDMC_CD_N)
+#define VIVOW_CT_SDMC_CD_N_TO_SYS PM8058_GPIO_PM_TO_SYS(VIVOW_CT_GPIO_SDMC_CD_N)
 
 extern int msm_add_sdcc(unsigned int controller, struct mmc_platform_data *plat);
 
@@ -73,7 +75,7 @@ static uint32_t movinand_on_gpio_table[] = {
 	PCOM_GPIO_CFG(113, 1, GPIO_OUTPUT, GPIO_NO_PULL, GPIO_10MA), /* DAT6 */
 	PCOM_GPIO_CFG(112, 1, GPIO_OUTPUT, GPIO_NO_PULL, GPIO_10MA), /* DAT7 */
 };
-static int __init vivo_disablesdcard_setup(char *str)
+static int __init vivow_ct_disablesdcard_setup(char *str)
 {
 	int cal = simple_strtol(str, NULL, 0);
 
@@ -81,7 +83,7 @@ static int __init vivo_disablesdcard_setup(char *str)
 	return 1;
 }
 
-__setup("board_vivo.disable_sdcard=", vivo_disablesdcard_setup);
+__setup("board_vivo_w_ct.disable_sdcard=", vivow_ct_disablesdcard_setup);
 
 static struct vreg *vreg_sdslot;	/* SD slot power */
 
@@ -98,7 +100,7 @@ static struct mmc_vdd_xlat mmc_vdd_table[] = {
 static unsigned int sdslot_vdd = 0xffffffff;
 static unsigned int sdslot_vreg_enabled;
 
-static uint32_t vivo_sdslot_switchvdd(struct device *dev, unsigned int vdd)
+static uint32_t vivow_ct_sdslot_switchvdd(struct device *dev, unsigned int vdd)
 {
 	int i;
 
@@ -140,34 +142,34 @@ static uint32_t vivo_sdslot_switchvdd(struct device *dev, unsigned int vdd)
 	return 0;
 }
 
-static unsigned int vivo_sdslot_status(struct device *dev)
+static unsigned int vivow_ct_sdslot_status(struct device *dev)
 {
 	unsigned int status;
 
-	status = (unsigned int) gpio_get_value(VIVO_SDMC_CD_N_TO_SYS);
+	status = (unsigned int) gpio_get_value(VIVOW_SDMC_CD_N_TO_SYS);
 
 	return (!status);
 }
 #endif
 
-#define VIVO_MMC_VDD		(MMC_VDD_28_29 | MMC_VDD_29_30)
+#define VIVOW_CT_MMC_VDD		(MMC_VDD_28_29 | MMC_VDD_29_30)
 
 #if 0
-static unsigned int vivo_sdslot_type = MMC_TYPE_SD;
+static unsigned int vivow_ct_sdslot_type = MMC_TYPE_SD;
 
-static struct mmc_platform_data vivo_sdslot_data = {
-	.ocr_mask	= VIVO_MMC_VDD,
-	.status_irq	= MSM_GPIO_TO_INT(VIVO_SDMC_CD_N_TO_SYS),
-	.status		= vivo_sdslot_status,
-	.translate_vdd	= vivo_sdslot_switchvdd,
-	.slot_type	= &vivo_sdslot_type,
+static struct mmc_platform_data vivow_ct_sdslot_data = {
+	.ocr_mask	= VIVOW_MMC_VDD,
+	.status_irq	= MSM_GPIO_TO_INT(VIVOW_CT_SDMC_CD_N_TO_SYS),
+	.status		= vivow_ct_sdslot_status,
+	.translate_vdd	= vivow_ct_sdslot_switchvdd,
+	.slot_type	= &vivow_ct_sdslot_type,
 	.dat0_gpio	= 63,
 };
 
-static unsigned int vivo_emmcslot_type = MMC_TYPE_MMC;
-static struct mmc_platform_data vivo_movinand_data = {
-	.ocr_mask	=  VIVO_MMC_VDD,
-	.slot_type	= &vivo_emmcslot_type,
+static unsigned int vivow_ct_emmcslot_type = MMC_TYPE_MMC;
+static struct mmc_platform_data vivow_ct_movinand_data = {
+	.ocr_mask	=  VIVOW_CT_MMC_VDD,
+	.slot_type	= &vivow_ct_emmcslot_type,
 	.mmc_bus_width  = MMC_CAP_8_BIT_DATA,
 };
 #endif
@@ -209,7 +211,7 @@ static void config_gpio_table(uint32_t *table, int len)
 /* BCM4329 returns wrong sdio_vsn(1) when we read cccr,
  * we use predefined value (sdio_vsn=2) here to initial sdio driver well
  */
-static struct embedded_sdio_data vivo_wifi_emb_data = {
+static struct embedded_sdio_data vivow_ct_wifi_emb_data = {
 	.cccr	= {
 		.sdio_vsn	= 2,
 		.multi_block	= 1,
@@ -224,7 +226,7 @@ static void (*wifi_status_cb)(int card_present, void *dev_id);
 static void *wifi_status_cb_devid;
 
 static int
-vivo_wifi_status_register(void (*callback)(int card_present, void *dev_id),
+vivow_ct_wifi_status_register(void (*callback)(int card_present, void *dev_id),
 				void *dev_id)
 {
 	if (wifi_status_cb)
@@ -234,20 +236,20 @@ vivo_wifi_status_register(void (*callback)(int card_present, void *dev_id),
 	return 0;
 }
 
-static int vivo_wifi_cd;	/* WiFi virtual 'card detect' status */
+static int vivow_ct_wifi_cd;	/* WiFi virtual 'card detect' status */
 
-static unsigned int vivo_wifi_status(struct device *dev)
+static unsigned int vivow_ct_wifi_status(struct device *dev)
 {
-	return vivo_wifi_cd;
+	return vivow_ct_wifi_cd;
 }
 
-static unsigned int vivo_wifislot_type = MMC_TYPE_SDIO_WIFI;
-static struct mmc_platform_data vivo_wifi_data = {
+static unsigned int vivow_ct_wifislot_type = MMC_TYPE_SDIO_WIFI;
+static struct mmc_platform_data vivow_ct_wifi_data = {
 	.ocr_mask		= MMC_VDD_28_29,
-	.status			= vivo_wifi_status,
-	.register_status_notify	= vivo_wifi_status_register,
-	.embedded_sdio		= &vivo_wifi_emb_data,
-	.slot_type          = &vivo_wifislot_type,
+	.status			= vivow_ct_wifi_status,
+	.register_status_notify	= vivow_ct_wifi_status_register,
+	.embedded_sdio		= &vivow_ct_wifi_emb_data,
+	.slot_type          = &vivow_ct_wifislot_type,
 		.mmc_bus_width  = MMC_CAP_4_BIT_DATA,
 		.msmsdcc_fmin   = 144000,
 		.msmsdcc_fmid   = 24576000,
@@ -255,17 +257,17 @@ static struct mmc_platform_data vivo_wifi_data = {
 		.nonremovable   = 0,
 };
 
-int vivo_wifi_set_carddetect(int val)
+int vivow_ct_wifi_set_carddetect(int val)
 {
 	printk(KERN_INFO "%s: %d\n", __func__, val);
-	vivo_wifi_cd = val;
+	vivow_ct_wifi_cd = val;
 	if (wifi_status_cb)
 		wifi_status_cb(val, wifi_status_cb_devid);
 	else
 		printk(KERN_WARNING "%s: Nobody to notify\n", __func__);
 	return 0;
 }
-EXPORT_SYMBOL(vivo_wifi_set_carddetect);
+EXPORT_SYMBOL(vivow_ct_wifi_set_carddetect);
 
 #if 0
 static struct pm8058_gpio pmic_gpio_sleep_clk_output = {
@@ -282,28 +284,28 @@ static struct pm8058_gpio pmic_gpio_sleep_clk_output = {
 #define ID_BT	1
 #define CLK_OFF	0
 #define CLK_ON	1
-static DEFINE_SPINLOCK(vivo_w_b_slock);
-int vivo_sleep_clk_state_wifi = CLK_OFF;
-int vivo_sleep_clk_state_bt = CLK_OFF;
+static DEFINE_SPINLOCK(vivow_ct_w_b_slock);
+int vivow_ct_sleep_clk_state_wifi = CLK_OFF;
+int vivow_ct_sleep_clk_state_bt = CLK_OFF;
 
-int vivo_wifi_bt_sleep_clk_ctl(int on, int id)
+int vivow_ct_wifi_bt_sleep_clk_ctl(int on, int id)
 {
 	int err = 0;
 	unsigned long flags;
 
 	printk(KERN_DEBUG "%s ON=%d, ID=%d\n", __func__, on, id);
 
-	spin_lock_irqsave(&vivo_w_b_slock, flags);
+	spin_lock_irqsave(&vivow_ct_w_b_slock, flags);
 	if (on) {
-		if ((CLK_OFF == vivo_sleep_clk_state_wifi)
-			&& (CLK_OFF == vivo_sleep_clk_state_bt)) {
+		if ((CLK_OFF == vivow_ct_sleep_clk_state_wifi)
+			&& (CLK_OFF == vivow_ct_sleep_clk_state_bt)) {
 			printk(KERN_DEBUG "EN SLEEP CLK\n");
 			pmic_gpio_sleep_clk_output.function = PM_GPIO_FUNC_2;
 			err = pm8058_gpio_config(
-					VIVO_GPIO_WIFI_BT_SLEEP_CLK_EN,
+					VIVOW_CT_GPIO_WIFI_BT_SLEEP_CLK_EN,
 					&pmic_gpio_sleep_clk_output);
 			if (err) {
-				spin_unlock_irqrestore(&vivo_w_b_slock,
+				spin_unlock_irqrestore(&vivow_ct_w_b_slock,
 							flags);
 				printk(KERN_DEBUG "ERR EN SLEEP CLK, ERR=%d\n",
 					err);
@@ -312,21 +314,21 @@ int vivo_wifi_bt_sleep_clk_ctl(int on, int id)
 		}
 
 		if (id == ID_BT)
-			vivo_sleep_clk_state_bt = CLK_ON;
+			vivow_ct_sleep_clk_state_bt = CLK_ON;
 		else
-			vivo_sleep_clk_state_wifi = CLK_ON;
+			vivow_ct_sleep_clk_state_wifi = CLK_ON;
 	} else {
-		if (((id == ID_BT) && (CLK_OFF == vivo_sleep_clk_state_wifi))
+		if (((id == ID_BT) && (CLK_OFF == vivow_ct_sleep_clk_state_wifi))
 			|| ((id == ID_WIFI)
-			&& (CLK_OFF == vivo_sleep_clk_state_bt))) {
+			&& (CLK_OFF == vivow_ct_sleep_clk_state_bt))) {
 			printk(KERN_DEBUG "DIS SLEEP CLK\n");
 			pmic_gpio_sleep_clk_output.function
 					= PM_GPIO_FUNC_NORMAL;
 			err = pm8058_gpio_config(
-					VIVO_GPIO_WIFI_BT_SLEEP_CLK_EN,
+					VIVOW_CT_GPIO_WIFI_BT_SLEEP_CLK_EN,
 					&pmic_gpio_sleep_clk_output);
 			if (err) {
-				spin_unlock_irqrestore(&vivo_w_b_slock,
+				spin_unlock_irqrestore(&vivow_ct_w_b_slock,
 							flags);
 				printk(KERN_DEBUG "ERR DIS SLEEP CLK, ERR=%d\n",
 					err);
@@ -337,18 +339,18 @@ int vivo_wifi_bt_sleep_clk_ctl(int on, int id)
 		}
 
 		if (id)
-			vivo_sleep_clk_state_bt = CLK_OFF;
+			vivow_ct_sleep_clk_state_bt = CLK_OFF;
 		else
-			vivo_sleep_clk_state_wifi = CLK_OFF;
+			vivow_ct_sleep_clk_state_wifi = CLK_OFF;
 	}
-	spin_unlock_irqrestore(&vivo_w_b_slock, flags);
+	spin_unlock_irqrestore(&vivow_ct_w_b_slock, flags);
 
 	return 0;
 }
-EXPORT_SYMBOL(vivo_wifi_bt_sleep_clk_ctl);
+EXPORT_SYMBOL(vivow_ct_wifi_bt_sleep_clk_ctl);
 #endif
 
-int vivo_wifi_power(int on)
+int vivow_ct_wifi_power(int on)
 {
 	printk(KERN_INFO "%s: %d\n", __func__, on);
 
@@ -360,48 +362,48 @@ int vivo_wifi_power(int on)
 				ARRAY_SIZE(wifi_off_gpio_table));
 	}
 
-	/*vivo_wifi_bt_sleep_clk_ctl(on, ID_WIFI);*/
-	gpio_set_value(VIVO_GPIO_WIFI_SHUTDOWN_N, on); /* WIFI_SHUTDOWN */
+	/*vivow_wifi_bt_sleep_clk_ctl(on, ID_WIFI);*/
+	gpio_set_value(VIVOW_CT_GPIO_WIFI_SHUTDOWN_N, on); /* WIFI_SHUTDOWN */
 	mdelay(120);
 	return 0;
 }
-EXPORT_SYMBOL(vivo_wifi_power);
+EXPORT_SYMBOL(vivow_ct_wifi_power);
 
-int vivo_wifi_reset(int on)
+int vivow_ct_wifi_reset(int on)
 {
 	printk(KERN_INFO "%s: do nothing\n", __func__);
 	return 0;
 }
 
-int __init vivo_init_mmc(unsigned int sys_rev)
+int __init vivow_ct_init_mmc(unsigned int sys_rev)
 {
 	uint32_t id;
 	wifi_status_cb = NULL;
 	/*sdslot_vreg_enabled = 0;*/
 
-	printk(KERN_INFO "vivo: %s\n", __func__);
+	printk(KERN_INFO "vivow_ct: %s\n", __func__);
 	/* SDC2: MoviNAND */
 #if 0
 	register_msm_irq_mask(INT_SDC2_0);
 	register_msm_irq_mask(INT_SDC2_1);
 	config_gpio_table(movinand_on_gpio_table,
 			  ARRAY_SIZE(movinand_on_gpio_table));
-	msm_add_sdcc(2, &vivo_movinand_data, 0, 0);
+	msm_add_sdcc(2, &vivow_ct_movinand_data, 0, 0);
 #endif
 
 	/* initial WIFI_SHUTDOWN# */
-	id = PCOM_GPIO_CFG(VIVO_GPIO_WIFI_SHUTDOWN_N, 0, GPIO_OUTPUT, GPIO_NO_PULL, GPIO_2MA),
+	id = PCOM_GPIO_CFG(VIVOW_CT_GPIO_WIFI_SHUTDOWN_N, 0, GPIO_OUTPUT, GPIO_NO_PULL, GPIO_2MA),
 	msm_proc_comm(PCOM_RPC_GPIO_TLMM_CONFIG_EX, &id, 0);
-	gpio_set_value(VIVO_GPIO_WIFI_SHUTDOWN_N, 0);
+	gpio_set_value(VIVOW_CT_GPIO_WIFI_SHUTDOWN_N, 0);
 
-	msm_add_sdcc(3, &vivo_wifi_data);
+	msm_add_sdcc(3, &vivow_ct_wifi_data);
 
 #if 0
 	register_msm_irq_mask(INT_SDC4_0);
 	register_msm_irq_mask(INT_SDC4_1);
 
 	if (opt_disable_sdcard) {
-		printk(KERN_INFO "vivo: SD-Card interface disabled\n");
+		printk(KERN_INFO "vivow_ct: SD-Card interface disabled\n");
 		goto done;
 	}
 
@@ -409,17 +411,17 @@ int __init vivo_init_mmc(unsigned int sys_rev)
 	if (IS_ERR(vreg_sdslot))
 		return PTR_ERR(vreg_sdslot);
 
-	set_irq_wake(MSM_GPIO_TO_INT(VIVO_SDMC_CD_N_TO_SYS), 1);
+	set_irq_wake(MSM_GPIO_TO_INT(VIVOW_CT_SDMC_CD_N_TO_SYS), 1);
 
-	msm_add_sdcc(4, &vivo_sdslot_data,
-			MSM_GPIO_TO_INT(VIVO_SDMC_CD_N_TO_SYS),
+	msm_add_sdcc(4, &vivow_ct_sdslot_data,
+			MSM_GPIO_TO_INT(VIVOW_CT_SDMC_CD_N_TO_SYS),
 			IORESOURCE_IRQ_LOWEDGE | IORESOURCE_IRQ_HIGHEDGE);
 done:
 #endif
 	/* reset eMMC for write protection test */
-	gpio_set_value(VIVO_GPIO_EMMC_RST, 0);	/* this should not work!!! */
+	gpio_set_value(VIVOW_CT_GPIO_EMMC_RST, 0);	/* this should not work!!! */
 	udelay(100);
-	gpio_set_value(VIVO_GPIO_EMMC_RST, 1);
+	gpio_set_value(VIVOW_CT_GPIO_EMMC_RST, 1);
 
 	return 0;
 }

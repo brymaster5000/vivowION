@@ -153,16 +153,6 @@ config ARCH_MSM9615
 	select MSM_RPM
 	select MSM_SPM_V2
 	select MSM_NATIVE_RESTART
-config ARCH_MSM8625
-	bool "MSM8625"
-	select ARCH_MSM_CORTEX_A5
-	select CPU_V7
-	select MSM_GPIOMUX
-	select ARM_GIC
-	select ARCH_MSM_CORTEXMP
-	select MULTI_IRQ_HANDLER
-	select ARM_TICKET_LOCKS
-	select MSM_RUN_QUEUE_STATS
 endmenu
 
 choice
@@ -393,15 +383,6 @@ config MACH_PRIMODS
 		bool "Primods"
 		help
 			Support for Primods (PDA phone).
-
-config MACH_PROTOU
-		depends on ARCH_MSM8625
-		depends on !MSM_STACKED_MEMORY
-		default n
-		select FB_MSM_MIPI_VIDEO_ONLY
-		bool "Protou"
-		help
-			Support for Protou (PDA phone).
 
 config MACH_MSM7625A_SURF
         depends on ARCH_MSM7X27A
@@ -2420,9 +2401,4 @@ config HTC_ACCESSORY_ONEWIRE
         help
           Provides support of HTC one wire protocol driver.
 
-config SENSE_4_PLUS
-	bool "SENSE 4 PLUS"
-	default y
-	help
-	  Support for SENSE 4 PLUS.
 endif

@@ -175,7 +175,7 @@ static uint8_t msm_irq_to_smsm[NR_IRQS] = {
 	[INT_PWB_I2C] = 5,
 	[INT_SDC1_0] = 6,
 	[INT_SDC1_1] = 7,
-#if (defined(CONFIG_MACH_PRIMODS) || defined(CONFIG_MACH_PROTOU))
+#ifdef CONFIG_MACH_PRIMODS
 	[INT_SDC2_0] = 32,
 #else
 	[INT_SDC2_0] = 8,
